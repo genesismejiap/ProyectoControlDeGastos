@@ -26,6 +26,50 @@ export const consultarProyectos = async (
     }
 };
 
+
+//Funcion para buscar un proyecto por nombre
+export const buscarProyecto = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        // Obtener el nombre enviado desde Postman
+        const { nombre } = req.query;
+
+        // Validar que se haya enviado un nombre
+        if (typeof nombre !== "string" || nombre.trim() === "") {
+            return res.status(400).json({
+                mensaje: "Debes ingresar el nombre del proyecto"
+            });
+        }
+
+        // Buscar proyectos en MySQL
+        const [proyectos] = await db.query(
+            "SELECT * FROM proyectos WHERE nombre LIKE ?",
+            [`%${nombre.trim()}%`]
+        );
+
+        // Verificar si se encontraron proyectos
+        const resultados = proyectos as import("mysql2").RowDataPacket[];
+
+        if (resultados.length === 0) {
+            return res.status(404).json({
+                mensaje: "No se encontraron proyectos con ese nombre"
+            });
+        }
+
+        // Mostrar los proyectos encontrados
+        res.status(200).json(resultados);
+
+    } catch (error) {
+        console.error("Error al buscar proyectos:", error);
+
+        res.status(500).json({
+            mensaje: "Error al buscar los proyectos"
+        });
+    }
+};
+
 // Función para registrar un proyecto
 export const crearProyecto = async (
     req: Request,
