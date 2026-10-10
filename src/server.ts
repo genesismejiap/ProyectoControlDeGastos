@@ -2,6 +2,9 @@
 import express from "express";
 import { db } from "./configuraciones/db.js";
 
+// Importar las rutas de proyectos
+import proyectoRutas from "./rutas/proyectoRutas.js";
+
 const app = express();
 const PORT = 3000;
 
@@ -13,6 +16,9 @@ app.get("/", (req, res) => {
         mensaje: "API de Control de Gastos funcionando"
     });
 });
+
+// Registrar las rutas de proyectos
+app.use("/api/proyectos", proyectoRutas);
 
 // Comprobar la conexión con MySQL
 async function iniciarServidor() {
@@ -33,3 +39,4 @@ async function iniciarServidor() {
 }
 
 iniciarServidor();
+
