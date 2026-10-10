@@ -2,8 +2,29 @@
 
 //PARTE POST
 import { Request, Response } from "express";
-import { ResultSetHeader } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { db } from "../configuraciones/db.js";
+
+// Función get para consultar todos los proyectos
+export const consultarProyectos = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const [proyectos] = await db.execute<RowDataPacket[]>(
+            "SELECT * FROM proyectos"
+        );
+
+        res.status(200).json({ proyectos });
+
+    } catch (error) {
+        console.error("Error al consultar proyectos:", error);
+
+        res.status(500).json({
+            mensaje: "Error al consultar los proyectos"
+        });
+    }
+};
 
 // Función para registrar un proyecto
 export const crearProyecto = async (
