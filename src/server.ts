@@ -10,11 +10,25 @@ const PORT = 3000;
 
 app.use(express.json());
 
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Servir archivos estáticos del frontend
+app.use(express.static(path.join(__dirname, "../public")));
+
 // Ruta para comprobar que funciona la API
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
     res.json({
         mensaje: "API de Control de Gastos funcionando"
     });
+});
+
+// Ruta para ver la página de servicios de Taruma Arquitectos
+app.get("/servicios", (req, res) => {
+    res.sendFile(path.join(__dirname, "../public/servicios.html"));
 });
 
 // Registrar las rutas de proyectos
