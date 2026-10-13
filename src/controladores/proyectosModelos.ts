@@ -70,6 +70,78 @@ export const buscarProyecto = async (
     }
 };
 
+// Función para actualizar un proyecto por su ID
+export const actualizarProyecto = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const { id } = req.params;
+        const proyectoId = Number(id);
+
+        if (!Number.isInteger(proyectoId) || proyectoId <= 0) {
+            return res.status(400).json({
+                mensaje: "El ID del proyecto es inválido"
+            });
+        }
+
+        const {
+            nombre,
+            descripcion,
+            ubicacion,
+            presupuesto,
+            fecha_inicio,
+            fecha_fin
+        } = req.body;
+
+        const presupuestoValidado = Number(presupuesto);
+
+        if (
+            typeof nombre !== "string" ||
+            nombre.trim() === "" ||
+            !Number.isFinite(presupuestoValidado) ||
+            presupuestoValidado < 0
+        ) {
+            return res.status(400).json({
+                mensaje: "El nombre y el presupuesto son obligatorios y deben ser válidos"
+            });
+        }
+
+        const [resultado] = await db.execute<ResultSetHeader>(
+            `UPDATE proyectos
+            SET nombre = ?, descripcion = ?, ubicacion = ?, presupuesto = ?, fecha_inicio = ?, fecha_fin = ?
+            WHERE id = ?`,
+            [
+                nombre.trim(),
+                descripcion ?? null,
+                ubicacion ?? null,
+                presupuestoValidado,
+                fecha_inicio ?? null,
+                fecha_fin ?? null,
+                proyectoId
+            ]
+        );
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                mensaje: "Proyecto no encontrado"
+            });
+        }
+
+        res.status(200).json({
+            mensaje: "Proyecto actualizado correctamente",
+            id: proyectoId
+        });
+
+    } catch (error) {
+        console.error("Error al actualizar proyecto:", error);
+
+        res.status(500).json({
+            mensaje: "Error al actualizar el proyecto"
+        });
+    }
+};
+
 // Función para registrar un proyecto
 export const crearProyecto = async (
     req: Request,

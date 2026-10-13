@@ -3,7 +3,8 @@ import { Router } from "express";
 import {
 	consultarProyectos,
 	buscarProyecto,
-	crearProyecto
+	crearProyecto,
+	actualizarProyecto
 } from "../controladores/proyectosModelos.js";
 
 const router = Router();
@@ -16,5 +17,8 @@ router.get("/buscar", buscarProyecto);
 
 // Registrar un proyecto
 router.post("/", crearProyecto);
+
+// Actualizar un proyecto por ID
+router.put("/:id", actualizarProyecto);
 
 export default router;
