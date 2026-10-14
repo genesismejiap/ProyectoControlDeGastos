@@ -1,11 +1,9 @@
 
-
-//PARTE POST
 import { Request, Response } from "express";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { db } from "../configuraciones/db.js";
 
-// Función get para consultar todos los proyectos
+
 export const consultarProyectos = async (
     req: Request,
     res: Response
@@ -27,29 +25,29 @@ export const consultarProyectos = async (
 };
 
 
-//Funcion para buscar un proyecto por nombre
+
 export const buscarProyecto = async (
     req: Request,
     res: Response
 ) => {
     try {
-        // Obtener el nombre enviado desde Postman
+        
         const { nombre } = req.query;
 
-        // Validar que se haya enviado un nombre
+        
         if (typeof nombre !== "string" || nombre.trim() === "") {
             return res.status(400).json({
                 mensaje: "Debes ingresar el nombre del proyecto"
             });
         }
 
-        // Buscar proyectos en MySQL
+     
         const [proyectos] = await db.query(
             "SELECT * FROM proyectos WHERE nombre LIKE ?",
             [`%${nombre.trim()}%`]
         );
 
-        // Verificar si se encontraron proyectos
+        
         const resultados = proyectos as import("mysql2").RowDataPacket[];
 
         if (resultados.length === 0) {
@@ -58,7 +56,7 @@ export const buscarProyecto = async (
             });
         }
 
-        // Mostrar los proyectos encontrados
+        
         res.status(200).json(resultados);
 
     } catch (error) {
@@ -70,7 +68,7 @@ export const buscarProyecto = async (
     }
 };
 
-// Función para actualizar un proyecto por su ID
+
 export const actualizarProyecto = async (
     req: Request,
     res: Response
@@ -142,13 +140,13 @@ export const actualizarProyecto = async (
     }
 };
 
-// Función para registrar un proyecto
+
 export const crearProyecto = async (
     req: Request,
     res: Response
 ) => {
     try {
-        // Recibir los datos enviados desde Postman
+        
         const {
             nombre,
             descripcion,
@@ -158,7 +156,7 @@ export const crearProyecto = async (
             fecha_fin
         } = req.body;
 
-        // Validar los campos obligatorios
+        
         if (
             typeof nombre !== "string" ||
             nombre.trim() === "" ||
@@ -171,7 +169,7 @@ export const crearProyecto = async (
             });
         }
 
-        // Insertar el proyecto en MySQL
+        
         const [resultado] = await db.execute<ResultSetHeader>(
             `INSERT INTO proyectos
             (nombre, descripcion, ubicacion, presupuesto, fecha_inicio, fecha_fin)
@@ -186,7 +184,7 @@ export const crearProyecto = async (
             ]
         );
 
-        // Respuesta al registrar el proyecto
+       
         res.status(201).json({
             mensaje: "Proyecto registrado correctamente",
             id: resultado.insertId

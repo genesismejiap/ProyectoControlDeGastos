@@ -19,7 +19,7 @@ test("actualizarProyecto devuelve 200 cuando actualiza un proyecto existente", a
       body: {
         nombre: "Proyecto actualizado",
         descripcion: "Nueva descripción",
-        ubicacion: "Bogotá",
+        ubicacion: "San Pedro",
         presupuesto: 5000,
         fecha_inicio: "2026-01-01",
         fecha_fin: "2026-12-31"
