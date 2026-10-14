@@ -198,3 +198,49 @@ export const crearProyecto = async (
         });
     }
 };
+
+
+
+export const eliminarProyecto = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        
+        const { id } = req.params;
+        const proyectoId = Number(id);
+
+       
+        if (!Number.isInteger(proyectoId) || proyectoId <= 0) {
+            return res.status(400).json({
+                mensaje: "El ID del proyecto es inválido"
+            });
+        }
+
+       
+        const [resultado] = await db.execute<ResultSetHeader>(
+            "DELETE FROM proyectos WHERE id = ?",
+            [proyectoId]
+        );
+
+       
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                mensaje: "Proyecto no encontrado"
+            });
+        }
+
+        
+        res.status(200).json({
+            mensaje: "Proyecto eliminado correctamente"
+        });
+
+    } catch (error) {
+        console.error("Error al eliminar proyecto:", error);
+
+        res.status(500).json({
+            mensaje: "Error al eliminar el proyecto"
+        });
+    }
+};
+
