@@ -4,6 +4,8 @@ import { db } from "./configuraciones/db.js";
 
 // Importar las rutas de proyectos
 import proyectoRutas from "./rutas/proyectoRutas.js";
+// Importar las rutas de las páginas (Inicio, Servicios, Nosotros, Contacto)
+import paginasRutas, { paginaNoEncontrada } from "./rutas/paginasRutas.js";
 
 const app = express();
 const PORT = 3000;
@@ -26,13 +28,14 @@ app.get("/api", (req, res) => {
     });
 });
 
-// Ruta para ver la página de servicios de Taruma Arquitectos
-app.get("/servicios", (req, res) => {
-    res.sendFile(path.join(__dirname, "../public/servicios.html"));
-});
+// Registrar las rutas de las páginas: /, /servicios, /nosotros y /contacto
+app.use("/", paginasRutas);
 
 // Registrar las rutas de proyectos
 app.use("/api/proyectos", proyectoRutas);
+
+// Rutas inexistentes (debe ir después de todas las demás rutas)
+app.use(paginaNoEncontrada);
 
 // Comprobar la conexión con MySQL
 async function iniciarServidor() {

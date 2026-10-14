@@ -1239,3 +1239,9 @@ img {
     text-align: center;
   }
 }
+
+
+/* Espacio superior para páginas sin hero (el header es fixed) */
+.page-start {
+  padding-top: calc(var(--header-height) + 60px);
+}

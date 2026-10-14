@@ -181,43 +181,13 @@ const SERVICIOS_DATA = {
 
 // Inicialización cuando carga el DOM
 document.addEventListener("DOMContentLoaded", () => {
-  initNavbarScroll();
-  initMobileMenu();
   initFilterTabs();
   initModalListeners();
   initEstimator();
   initContactForm();
 });
 
-// 1. Barra de Navegación Scrolled
-function initNavbarScroll() {
-  const navbar = document.querySelector(".navbar");
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 40) {
-      navbar.classList.add("scrolled");
-    } else {
-      navbar.classList.remove("scrolled");
-    }
-  });
-}
-
-// 2. Menú Móvil
-function initMobileMenu() {
-  const toggleBtn = document.querySelector(".mobile-toggle");
-  const navLinks = document.querySelector(".nav-links");
-  
-  if (toggleBtn && navLinks) {
-    toggleBtn.addEventListener("click", () => {
-      navLinks.classList.toggle("active");
-    });
-
-    document.querySelectorAll(".nav-link").forEach(link => {
-      link.addEventListener("click", () => {
-        navLinks.classList.remove("active");
-      });
-    });
-  }
-}
+// (La barra de navegación y el menú móvil ahora se manejan en js/layout.js)
 
 // 3. Filtros Interactivos para las Tarjetas
 function initFilterTabs() {
