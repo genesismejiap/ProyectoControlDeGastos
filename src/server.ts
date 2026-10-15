@@ -5,7 +5,7 @@ import { db } from "./configuraciones/db.js";
 
 import proyectoRutas from "./rutas/proyectoRutas.js";
 
-import paginasRutas, { paginaNoEncontrada } from "./rutas/paginasRutas.js";
+
 
 const app = express();
 const PORT = 3000;
@@ -28,13 +28,13 @@ app.get("/api", (req, res) => {
     });
 });
 
-app.use("/", paginasRutas);
+
 
 
 app.use("/api/proyectos", proyectoRutas);
 
 
-app.use(paginaNoEncontrada);
+
 
 
 async function iniciarServidor() {
