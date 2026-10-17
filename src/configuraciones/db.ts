@@ -1,13 +1,17 @@
 
-import mysql from "mysql2/promise";
+import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-export const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: Number(process.env.DB_PORT || 3306)
-});
+export const db = new Sequelize(
+    process.env.DB_NAME || "",
+    process.env.DB_USER || "",
+    process.env.DB_PASSWORD || "",
+    {
+        host: process.env.DB_HOST || "localhost",
+        port: Number(process.env.DB_PORT || 3306),
+        dialect: "mysql",
+        logging: false
+    }
+);
