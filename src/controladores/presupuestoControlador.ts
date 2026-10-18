@@ -52,3 +52,143 @@ export const crearPresupuesto = async (
         });
     }
 };
+
+
+ // Consultar todos los presupuestos
+export const consultarPresupuestos = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const presupuestos = await Presupuesto.findAll();
+
+        return res.status(200).json({
+            presupuestos
+        });
+
+    } catch (error) {
+        console.error("Error al consultar presupuestos:", error);
+
+        return res.status(500).json({
+            mensaje: "Error al consultar los presupuestos"
+        });
+    }
+};
+
+
+
+// Actualizar un presupuesto existente
+export const actualizarPresupuesto = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const errores = validationResult(req);
+
+        if (!errores.isEmpty()) {
+            return res.status(400).json({
+                errores: errores.array()
+            });
+        }
+
+        const id = Number(req.params.id);
+
+        // Validar que el ID sea un número entero positivo
+if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({
+        mensaje: "El ID del presupuesto debe ser un número entero positivo"
+    });
+}
+
+        const { proyecto_id, fecha, estado } = req.body;
+
+        // Buscar el presupuesto
+        const presupuesto = await Presupuesto.findByPk(id);
+
+        if (!presupuesto) {
+            return res.status(404).json({
+                mensaje: "El presupuesto no existe"
+            });
+        }
+
+        // Verificar que el proyecto exista
+        const proyecto = await Proyecto.findByPk(proyecto_id);
+
+        if (!proyecto) {
+            return res.status(404).json({
+                mensaje: "El proyecto no existe"
+            });
+        }
+
+        // Actualizar los datos
+        await presupuesto.update({
+            proyecto_id,
+            fecha,
+            estado
+        });
+
+        return res.status(200).json({
+            mensaje: "Presupuesto actualizado correctamente",
+            presupuesto
+        });
+
+    } catch (error) {
+        console.error("Error al actualizar presupuesto:", error);
+
+        return res.status(500).json({
+            mensaje: "Error al actualizar el presupuesto"
+        });
+    }
+};
+
+
+
+ // Eliminar un presupuesto por su ID
+export const eliminarPresupuesto = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        // Revisar las validaciones de la ruta
+        const errores = validationResult(req);
+
+        if (!errores.isEmpty()) {
+            return res.status(400).json({
+                errores: errores.array()
+            });
+        }
+
+        // Obtener el ID del presupuesto
+        const id = Number(req.params.id);
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({
+                mensaje: "El ID del presupuesto debe ser válido"
+            });
+        }
+
+        // Buscar el presupuesto
+        const presupuesto = await Presupuesto.findByPk(id);
+
+        if (!presupuesto) {
+            return res.status(404).json({
+                mensaje: "El presupuesto no existe"
+            });
+        }
+
+        // Eliminar el presupuesto
+        await presupuesto.destroy();
+
+        return res.status(200).json({
+            mensaje: "Presupuesto eliminado correctamente"
+        });
+
+    } catch (error) {
+        console.error("Error al eliminar presupuesto:", error);
+
+        return res.status(500).json({
+            mensaje: "Error al eliminar el presupuesto"
+        });
+    }
+};
+

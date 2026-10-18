@@ -7,6 +7,8 @@ import { Presupuesto } from "./modelos/presupuestoModelo.js";
 import DetallePresupuesto from "./modelos/detallePresupuestoModelo.js";
 import "./modelos/relaciones.js";
 
+import presupuestoRutas from "./rutas/presupuestoRutas.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -26,7 +28,11 @@ app.get("/api", (req, res) => {
     });
 });
 
+// Rutas de proyectos
 app.use("/api/proyectos", proyectoRutas);
+
+// Rutas de presupuestos
+app.use("/api/presupuestos", presupuestoRutas);
 
 async function iniciarServidor() {
     try {
