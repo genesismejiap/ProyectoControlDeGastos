@@ -3,6 +3,10 @@ import express from "express";
 import { db } from "./configuraciones/db.js";
 import proyectoRutas from "./rutas/proyectoRutas.js";
 
+import { Presupuesto } from "./modelos/presupuestoModelo.js";
+import DetallePresupuesto from "./modelos/detallePresupuestoModelo.js";
+import "./modelos/relaciones.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -30,12 +34,20 @@ async function iniciarServidor() {
 
         console.log("Conexión con MySQL mediante Sequelize exitosa");
 
+        // Verificar o crear la tabla presupuestos
+        await Presupuesto.sync();
+
+        // Crear la tabla detalle_presupuesto si no existe
+        await DetallePresupuesto.sync();
+
+        console.log("Tablas de presupuestos sincronizadas correctamente");
+
         app.listen(PORT, () => {
             console.log(`Servidor en http://localhost:${PORT}`);
         });
 
     } catch (error) {
-        console.error("Error al conectar con MySQL:", error);
+        console.error("Error al conectar o sincronizar MySQL:", error);
     }
 }
 
