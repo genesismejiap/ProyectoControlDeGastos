@@ -7,9 +7,13 @@ import { Presupuesto } from "./modelos/presupuestoModelo.js";
 import DetallePresupuesto from "./modelos/detallePresupuestoModelo.js";
 import "./modelos/relaciones.js";
 
+import categoriaRutas from "./rutas/categoriaRutas.js";
+
 import presupuestoRutas from "./rutas/presupuestoRutas.js";
 
 import detallePresupuestoRutas from "./rutas/detallePresupuestoRutas.js";
+
+import gastosRutas from "./rutas/gastosRutas.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -36,6 +40,12 @@ app.use("/api/proyectos", proyectoRutas);
 // Rutas de presupuestos
 app.use("/api/presupuestos", presupuestoRutas);
 app.use("/api/detalle-presupuestos", detallePresupuestoRutas);
+
+//rutas de categoria
+app.use("/api/categorias", categoriaRutas);
+
+//rutas de gastos
+app.use("/api/gastos", gastosRutas);
 
 async function iniciarServidor() {
     try {
