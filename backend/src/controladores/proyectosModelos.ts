@@ -1,6 +1,7 @@
 
 import { Request, Response } from "express";
 import { Op } from "sequelize";
+import { validationResult } from "express-validator";
 import { Proyecto } from "../modelos/proyectoModelo.js";
 
 
@@ -30,6 +31,15 @@ export const buscarProyecto = async (
     res: Response
 ) => {
     try {
+        // Revisar las validaciones
+        const errores = validationResult(req);
+
+        if (!errores.isEmpty()) {
+            return res.status(400).json({
+                errores: errores.array()
+            });
+        }
+
         const { nombre } = req.query;
 
         if (typeof nombre !== "string" || nombre.trim() === "") {
@@ -70,6 +80,15 @@ export const actualizarProyecto = async (
     res: Response
 ) => {
     try {
+        // Revisar las validaciones
+        const errores = validationResult(req);
+
+        if (!errores.isEmpty()) {
+            return res.status(400).json({
+                errores: errores.array()
+            });
+        }
+
         const { id } = req.params;
         const proyectoId = Number(id);
 
@@ -139,6 +158,15 @@ export const crearProyecto = async (
     res: Response
 ) => {
     try {
+        // Revisar las validaciones
+        const errores = validationResult(req);
+
+        if (!errores.isEmpty()) {
+            return res.status(400).json({
+                errores: errores.array()
+            });
+        }
+
         const {
             nombre,
             descripcion,
@@ -190,6 +218,15 @@ export const eliminarProyecto = async (
     res: Response
 ) => {
     try {
+        // Revisar las validaciones
+        const errores = validationResult(req);
+
+        if (!errores.isEmpty()) {
+            return res.status(400).json({
+                errores: errores.array()
+            });
+        }
+
         const { id } = req.params;
         const proyectoId = Number(id);
 
