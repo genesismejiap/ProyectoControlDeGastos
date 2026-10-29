@@ -14,9 +14,12 @@ import presupuestoRutas from "./rutas/presupuestoRutas.js";
 import detallePresupuestoRutas from "./rutas/detallePresupuestoRutas.js";
 
 import gastosRutas from "./rutas/gastosRutas.js";
+import { Usuario } from "./modelos/usuarioModelo.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
+
+import usuarioRutas from "./rutas/usuarioRutas.js";
 
 const app = express();
 const PORT = 3000;
@@ -47,6 +50,7 @@ app.use("/api/categorias", categoriaRutas);
 
 //rutas de gastos
 app.use("/api/gastos", gastosRutas);
+app.use("/api/usuarios", usuarioRutas);
 
 async function iniciarServidor() {
     try {
@@ -59,6 +63,8 @@ async function iniciarServidor() {
 
         // Crear la tabla detalle_presupuesto si no existe
         await DetallePresupuesto.sync();
+
+         await Usuario.sync();
 
         console.log("Tablas de presupuestos sincronizadas correctamente");
 
