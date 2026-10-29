@@ -1,4 +1,3 @@
-
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { Usuario } from "../modelos/usuarioModelo.js";
@@ -42,6 +41,27 @@ export const registrarUsuario = async (
             nombre,
             correo,
             contrasena: contrasenaProtegida
+        });
+
+        // Enviar correo de bienvenida al usuario recién registrado
+        // No interrumpe el registro si falla el envío
+        transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: nuevoUsuario.get("correo") as string,
+            subject: "Bienvenido - Control de Gastos",
+            text: `Hola ${nuevoUsuario.get("nombre")},
+
+¡Bienvenido al Sistema de Control de Gastos!
+
+Tu cuenta fue creada correctamente. Ya puedes iniciar
+sesión y comenzar a administrar tus proyectos,
+presupuestos y gastos.
+
+Si no creaste esta cuenta, ignora este mensaje.`
+        }).then(() => {
+            console.log("Correo de bienvenida enviado");
+        }).catch((error) => {
+            console.error("No se pudo enviar el correo de bienvenida:", error);
         });
 
         // Responder sin mostrar la contraseña
@@ -160,5 +180,3 @@ cambiar tu contraseña.`
     });
 }
 };
-
-
