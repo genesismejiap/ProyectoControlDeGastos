@@ -21,6 +21,8 @@ import { fileURLToPath } from "url";
 
 import usuarioRutas from "./rutas/usuarioRutas.js";
 
+import correoRutas from "./rutas/correoRutas.js";
+
 const app = express();
 const PORT = 3000;
 
@@ -51,6 +53,8 @@ app.use("/api/categorias", categoriaRutas);
 //rutas de gastos
 app.use("/api/gastos", gastosRutas);
 app.use("/api/usuarios", usuarioRutas);
+//Rutas para enviar correo electronicos
+app.use("/api/correos", correoRutas);
 
 async function iniciarServidor() {
     try {

@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 import { Usuario } from "../modelos/usuarioModelo.js";
 import jwt from "jsonwebtoken";
 
+import { transporter } from "../configuraciones/correoConfig.js";
+
 // Registrar un usuario
 export const registrarUsuario = async (
     req: Request,
@@ -116,6 +118,28 @@ export const iniciarSesion = async (req: Request, res: Response): Promise<void> 
             claveSecreta,
             { expiresIn: "1h" }
         );
+
+
+        // Enviar una notificación al correo del usuario
+        // No interrumpe el inicio de sesión si falla el envío
+        transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: usuario.get("correo") as string,
+            subject: "Inicio de sesión - Control de Gastos",
+            text: `Hola ${usuario.get("nombre")},
+
+Se ha iniciado sesión correctamente en tu cuenta
+del Sistema de Control de Gastos.
+
+Si no reconoces esta actividad, te recomendamos
+cambiar tu contraseña.`
+        }).then(() => {
+            console.log("Correo de notificación enviado");
+        }).catch((error) => {
+            console.error("No se pudo enviar el correo:", error);
+        });
+
+
 
         // Responder con los datos del usuario y el token
         res.status(200).json({
