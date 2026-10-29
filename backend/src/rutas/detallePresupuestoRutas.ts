@@ -46,8 +46,7 @@ router.post(
 
         body("precio_unitario")
             .isFloat({ min: 0 })
-            .withMessage("El precio unitario debe ser un número con máximo dos decimales")
-            .withMessage("El precio unitario no puede ser negativo")
+            .withMessage("El precio unitario debe ser un número mayor o igual a cero")
     ],
     crearDetallePresupuesto
 );
@@ -86,8 +85,7 @@ router.put(
 
         body("precio_unitario")
            .isFloat({ min: 0 })
-            .withMessage("El precio debe tener máximo dos decimales")
-            .withMessage("El precio no puede ser negativo")
+            .withMessage("El precio unitario debe ser un número mayor o igual a cero")
     ],
     actualizarDetallePresupuesto
 );
