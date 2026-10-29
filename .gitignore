@@ -1,0 +1,8 @@
+node_modules/
+.env
+env.env
+dist/
+*.log
+PORTAFOLIO TARUMA ARQUITECTOS-1.pdf
+.devcontainer
+
