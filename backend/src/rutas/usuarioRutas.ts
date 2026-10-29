@@ -1,7 +1,7 @@
 
 import { Router, Request, Response, NextFunction } from "express";
 import { body, validationResult } from "express-validator";
-import { registrarUsuario } from "../controladores/usuarioControlador.js";
+import { registrarUsuario, iniciarSesion } from "../controladores/usuarioControlador.js";
 
 const router = Router();
 
@@ -49,5 +49,26 @@ router.post(
     validarCampos,
     registrarUsuario
 );
+
+
+router.post(
+    "/login",
+    [
+        body("correo")
+            .isEmail()
+            .withMessage("Ingrese un correo válido")
+            .normalizeEmail(),
+
+        body("contrasena")
+            .isString()
+            .withMessage("La contraseña debe ser texto")
+            .bail()
+            .notEmpty()
+            .withMessage("La contraseña es obligatoria")
+    ],
+    validarCampos,
+    iniciarSesion
+);
+
 
 export default router;
