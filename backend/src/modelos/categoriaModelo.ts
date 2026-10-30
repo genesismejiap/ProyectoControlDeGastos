@@ -9,6 +9,14 @@ import {
 
 import { db } from "../configuraciones/db.js";
 
+/**
+ * Modelo de la tabla `categorias`.
+ * Agrupa gastos y entregables de presupuesto (ej.: Materiales, Mano de obra).
+ *
+ * - id: clave primaria autoincremental
+ * - nombre: nombre de la categoría (máx. 100 caracteres, obligatorio)
+ * - descripcion: texto opcional
+ */
 export class Categoria extends Model<
     InferAttributes<Categoria>,
     InferCreationAttributes<Categoria>

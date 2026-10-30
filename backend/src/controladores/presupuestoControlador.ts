@@ -1,11 +1,20 @@
 
+/**
+ * Controladores de presupuestos (CRUD).
+ */
+
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 
 import { Presupuesto } from "../modelos/presupuestoModelo.js";
 import { Proyecto } from "../modelos/proyectoModelo.js";
 
-// Registrar un nuevo presupuesto
+/**
+ * Registra un presupuesto para un proyecto. Si no se envía estado, queda como "Borrador".
+ *
+ * Body: { proyecto_id, fecha, estado? }
+ * Respuestas: 201 creado · 400 validación · 404 proyecto inexistente · 500 error
+ */
 export const crearPresupuesto = async (
     req: Request,
     res: Response
@@ -54,7 +63,11 @@ export const crearPresupuesto = async (
 };
 
 
- // Consultar todos los presupuestos
+/**
+ * Devuelve todos los presupuestos.
+ *
+ * Respuestas: 200 { presupuestos } · 500 error
+ */
 export const consultarPresupuestos = async (
     req: Request,
     res: Response
@@ -77,7 +90,12 @@ export const consultarPresupuestos = async (
 
 
 
-// Actualizar un presupuesto existente
+/**
+ * Actualiza un presupuesto existente.
+ *
+ * Params: id · Body: { proyecto_id, fecha, estado }
+ * Respuestas: 200 actualizado · 400 validación · 404 presupuesto o proyecto inexistente · 500 error
+ */
 export const actualizarPresupuesto = async (
     req: Request,
     res: Response
@@ -143,7 +161,12 @@ if (!Number.isInteger(id) || id <= 0) {
 
 
 
- // Eliminar un presupuesto por su ID
+/**
+ * Elimina un presupuesto por su ID.
+ *
+ * Params: id
+ * Respuestas: 200 eliminado · 400 ID inválido · 404 no existe · 500 error
+ */
 export const eliminarPresupuesto = async (
     req: Request,
     res: Response

@@ -1,4 +1,9 @@
 
+/**
+ * Rutas de detalles de presupuesto (entregables de cada presupuesto).
+ * Prefijo: /api/detalle-presupuestos
+ */
+
 import { Router } from "express";
 import { body, param } from "express-validator";
 
@@ -12,9 +17,65 @@ import {
 
 
 const router = Router();
-// Consultar todos los detalles de presupuestos
+/**
+ * @swagger
+ * /api/detalle-presupuestos:
+ *   get:
+ *     summary: Consultar todos los detalles de presupuestos
+ *     tags: [Detalle de presupuestos]
+ *     responses:
+ *       200:
+ *         description: Lista de detalles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 detalles:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/DetallePresupuesto'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.get("/", consultarDetallesPresupuesto);
-// Ruta para registrar un detalle de presupuesto
+/**
+ * @swagger
+ * /api/detalle-presupuestos/guardar:
+ *   post:
+ *     summary: Registrar un detalle de presupuesto
+ *     description: La categoría se indica por su nombre y debe existir previamente.
+ *     tags: [Detalle de presupuestos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/DetallePresupuestoEntrada'
+ *     responses:
+ *       201:
+ *         description: Detalle de presupuesto registrado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Detalle de presupuesto registrado correctamente
+ *                 detalle:
+ *                   $ref: '#/components/schemas/DetallePresupuesto'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         description: El presupuesto o la categoría no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.post(
     "/guardar",
     [
@@ -24,7 +85,7 @@ router.post(
             .isInt({ min: 1 })
             .withMessage("El ID del presupuesto debe ser válido"),
 
-       
+
         body("categoria")
              .trim()
              .notEmpty()
@@ -51,7 +112,44 @@ router.post(
     crearDetallePresupuesto
 );
 
-// Ruta para actualizar un detalle de presupuesto
+/**
+ * @swagger
+ * /api/detalle-presupuestos/actualizar/{id}:
+ *   put:
+ *     summary: Actualizar un detalle de presupuesto
+ *     tags: [Detalle de presupuestos]
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdRuta'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/DetallePresupuestoEntrada'
+ *     responses:
+ *       200:
+ *         description: Detalle de presupuesto actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Detalle de presupuesto actualizado correctamente
+ *                 detalle:
+ *                   $ref: '#/components/schemas/DetallePresupuesto'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         description: El detalle, el presupuesto o la categoría no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.put(
     "/actualizar/:id",
     [
@@ -90,7 +188,28 @@ router.put(
     actualizarDetallePresupuesto
 );
 
-// Ruta para eliminar un detalle de presupuesto
+/**
+ * @swagger
+ * /api/detalle-presupuestos/eliminar/{id}:
+ *   delete:
+ *     summary: Eliminar un detalle de presupuesto
+ *     tags: [Detalle de presupuestos]
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdRuta'
+ *     responses:
+ *       200:
+ *         description: Detalle de presupuesto eliminado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         $ref: '#/components/responses/NoEncontrado'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.delete(
     "/eliminar/:id",
     [

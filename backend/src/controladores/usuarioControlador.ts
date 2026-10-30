@@ -1,3 +1,8 @@
+
+/**
+ * Controladores de usuarios: registro e inicio de sesión.
+ */
+
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { Usuario } from "../modelos/usuarioModelo.js";
@@ -5,7 +10,13 @@ import jwt from "jsonwebtoken";
 
 import { transporter } from "../configuraciones/correoConfig.js";
 
-// Registrar un usuario
+/**
+ * Registra un usuario nuevo guardando la contraseña cifrada con bcrypt
+ * y envía, en segundo plano, un correo de bienvenida.
+ *
+ * Body: { nombre, correo, contrasena }
+ * Respuestas: 201 { mensaje, usuario } · 400 campos faltantes · 409 correo duplicado · 500 error
+ */
 export const registrarUsuario = async (
     req: Request,
     res: Response
@@ -84,6 +95,14 @@ Si no creaste esta cuenta, ignora este mensaje.`
 };
 
 
+/**
+ * Inicia sesión validando correo y contraseña.
+ * Genera un token JWT (expira en 1 hora) firmado con JWT_SECRET y envía,
+ * en segundo plano, un correo de notificación al usuario.
+ *
+ * Body: { correo, contrasena }
+ * Respuestas: 200 { mensaje, token, usuario } · 400 campos faltantes · 401 credenciales incorrectas · 500 error
+ */
 export const iniciarSesion = async (req: Request, res: Response): Promise<void> => {
     try {
         const { correo, contrasena } = req.body;
@@ -173,10 +192,12 @@ cambiar tu contraseña.`
         });
 
     } catch (error) {
-    console.error("Error al iniciar sesión:", error);
+        console.error("Error al iniciar sesión:", error);
 
-    res.status(500).json({
-        mensaje: "Error al iniciar sesión"
-    });
-}
+        res.status(500).json({
+            mensaje: "Error al iniciar sesión"
+        });
+    }
 };
+
+
