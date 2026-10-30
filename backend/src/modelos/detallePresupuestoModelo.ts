@@ -9,6 +9,17 @@ import {
 
 import { db } from "../configuraciones/db.js";
 
+/**
+ * Modelo de la tabla `detalle_presupuesto`.
+ * Cada registro es un entregable (ítem) dentro de un presupuesto.
+ *
+ * - id: clave primaria autoincremental
+ * - presupuesto_id: FK a `presupuestos.id`
+ * - categoria_id: FK a `categorias.id`
+ * - entregable: descripción del ítem (máx. 150 caracteres)
+ * - cantidad: entero mayor o igual a 1
+ * - precio_unitario: DECIMAL(12,2) mayor o igual a 0
+ */
 export class DetallePresupuesto extends Model<
     InferAttributes<DetallePresupuesto>,
     InferCreationAttributes<DetallePresupuesto>

@@ -2,7 +2,13 @@
 import { Request, Response } from "express";
 import { transporter } from "../configuraciones/correoConfig.js";
 
-// Controlador para enviar correos electrónicos
+/**
+ * Envía un correo electrónico en texto plano usando la cuenta configurada en EMAIL_USER.
+ * Requiere el middleware verificarToken en la ruta.
+ *
+ * Body: { destinatario, asunto, mensaje }
+ * Respuestas: 200 enviado · 400 campos faltantes · 500 error de envío
+ */
 export const enviarCorreo = async (
   req: Request,
   res: Response

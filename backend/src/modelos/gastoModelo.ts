@@ -9,6 +9,17 @@ import {
 
 import { db } from "../configuraciones/db.js";
 
+/**
+ * Modelo de la tabla `gastos`.
+ * Registra un gasto real realizado en un proyecto.
+ *
+ * - id: clave primaria autoincremental
+ * - proyecto_id: FK a `proyectos.id`
+ * - categoria_id: FK a `categorias.id`
+ * - descripcion: detalle del gasto (máx. 255 caracteres)
+ * - monto: DECIMAL(12,2) mayor o igual a 0
+ * - fecha: fecha del gasto (YYYY-MM-DD)
+ */
 export class Gasto extends Model<
     InferAttributes<Gasto>,
     InferCreationAttributes<Gasto>

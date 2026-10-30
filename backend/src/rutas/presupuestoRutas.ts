@@ -1,9 +1,14 @@
 
+/**
+ * Rutas de presupuestos.
+ * Prefijo: /api/presupuestos
+ */
+
 import { Router } from "express";
 import { body,param } from "express-validator";
 
 import { crearPresupuesto,
-     consultarPresupuestos, 
+     consultarPresupuestos,
      actualizarPresupuesto,
     eliminarPresupuesto
  } from "../controladores/presupuestoControlador.js";
@@ -11,11 +16,71 @@ import { crearPresupuesto,
 const router = Router();
 
 
-// Ruta para consultar todos los presupuestos
+/**
+ * @swagger
+ * /api/presupuestos:
+ *   get:
+ *     summary: Consultar todos los presupuestos
+ *     tags: [Presupuestos]
+ *     responses:
+ *       200:
+ *         description: Lista de presupuestos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 presupuestos:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Presupuesto'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.get("/", consultarPresupuestos);
 
 
-// Ruta para actualizar un presupuesto
+/**
+ * @swagger
+ * /api/presupuestos/actualizar/{id}:
+ *   put:
+ *     summary: Actualizar un presupuesto
+ *     description: En la actualización el campo `estado` es obligatorio.
+ *     tags: [Presupuestos]
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdRuta'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/PresupuestoEntrada'
+ *               - required: [estado]
+ *     responses:
+ *       200:
+ *         description: Presupuesto actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Presupuesto actualizado correctamente
+ *                 presupuesto:
+ *                   $ref: '#/components/schemas/Presupuesto'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         description: El presupuesto o el proyecto no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.put(
     "/actualizar/:id",
     [
@@ -44,8 +109,44 @@ router.put(
     actualizarPresupuesto
 );
 
- 
-// Ruta para registrar un presupuesto
+
+/**
+ * @swagger
+ * /api/presupuestos/guardar:
+ *   post:
+ *     summary: Registrar un nuevo presupuesto
+ *     description: Si no se envía `estado`, se guarda como "Borrador".
+ *     tags: [Presupuestos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PresupuestoEntrada'
+ *     responses:
+ *       201:
+ *         description: Presupuesto registrado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Presupuesto registrado correctamente
+ *                 presupuesto:
+ *                   $ref: '#/components/schemas/Presupuesto'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         description: El proyecto no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.post(
     "/guardar",
     [
@@ -70,7 +171,28 @@ router.post(
 );
 
 
-// Ruta para eliminar un presupuesto
+/**
+ * @swagger
+ * /api/presupuestos/eliminar/{id}:
+ *   delete:
+ *     summary: Eliminar un presupuesto
+ *     tags: [Presupuestos]
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdRuta'
+ *     responses:
+ *       200:
+ *         description: Presupuesto eliminado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         $ref: '#/components/responses/NoEncontrado'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.delete(
     "/eliminar/:id",
     [

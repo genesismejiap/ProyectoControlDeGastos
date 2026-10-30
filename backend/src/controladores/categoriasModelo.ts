@@ -1,10 +1,19 @@
 
+/**
+ * Controladores de categorías (CRUD).
+ */
+
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 
 import { Categoria } from "../modelos/categoriaModelo.js";
 
-// Registrar una nueva categoría
+/**
+ * Registra una nueva categoría.
+ *
+ * Body: { nombre, descripcion? }
+ * Respuestas: 201 creada · 400 validación · 409 nombre duplicado · 500 error
+ */
 export const crearCategoria = async (
     req: Request,
     res: Response
@@ -54,7 +63,11 @@ export const crearCategoria = async (
 };
 
 
-// Consultar todas las categorías registradas
+/**
+ * Devuelve todas las categorías registradas.
+ *
+ * Respuestas: 200 { categorias } · 500 error
+ */
 export const consultarCategorias = async (
     req: Request,
     res: Response
@@ -77,7 +90,12 @@ export const consultarCategorias = async (
 };
 
 
-// Eliminar una categoría por su ID
+/**
+ * Elimina una categoría por su ID.
+ *
+ * Params: id
+ * Respuestas: 200 eliminada · 400 ID inválido · 404 no existe · 500 error
+ */
 export const eliminarCategoria = async (
     req: Request,
     res: Response
@@ -126,7 +144,12 @@ export const eliminarCategoria = async (
     }
 };
 
-// Actualizar una categoría existente
+/**
+ * Actualiza el nombre y la descripción de una categoría.
+ *
+ * Params: id · Body: { nombre, descripcion? }
+ * Respuestas: 200 actualizada · 400 validación · 404 no existe · 409 nombre duplicado · 500 error
+ */
 export const actualizarCategoria = async (
     req: Request,
     res: Response
