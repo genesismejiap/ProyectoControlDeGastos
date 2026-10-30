@@ -1,14 +1,75 @@
 
+/**
+ * Rutas de gastos.
+ * Prefijo: /api/gastos
+ */
+
 import { Router } from "express";
 import { body, param } from "express-validator";
 
 import { crearGasto, consultarGastos, actualizarGasto, eliminarGasto } from "../controladores/gastosControlador.js";
 
 const router = Router();
-// Ruta para consultar todos los gastos
+/**
+ * @swagger
+ * /api/gastos:
+ *   get:
+ *     summary: Consultar todos los gastos
+ *     tags: [Gastos]
+ *     responses:
+ *       200:
+ *         description: Lista de gastos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 gastos:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Gasto'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.get("/", consultarGastos);
 
-// Ruta para registrar un nuevo gasto
+/**
+ * @swagger
+ * /api/gastos/guardar:
+ *   post:
+ *     summary: Registrar un nuevo gasto
+ *     description: La categoría se indica por su nombre y debe existir previamente.
+ *     tags: [Gastos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/GastoEntrada'
+ *     responses:
+ *       201:
+ *         description: Gasto registrado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Gasto registrado correctamente
+ *                 gasto:
+ *                   $ref: '#/components/schemas/Gasto'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         description: El proyecto o la categoría no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.post(
     "/guardar",
     [
@@ -45,7 +106,44 @@ router.post(
     crearGasto
 );
 
-// Ruta para actualizar un gasto
+/**
+ * @swagger
+ * /api/gastos/actualizar/{id}:
+ *   put:
+ *     summary: Actualizar un gasto
+ *     tags: [Gastos]
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdRuta'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/GastoEntrada'
+ *     responses:
+ *       200:
+ *         description: Gasto actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Gasto actualizado correctamente
+ *                 gasto:
+ *                   $ref: '#/components/schemas/Gasto'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         description: El gasto, el proyecto o la categoría no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.put(
     "/actualizar/:id",
     [
@@ -86,7 +184,28 @@ router.put(
     actualizarGasto
 );
 
-// Ruta para eliminar un gasto
+/**
+ * @swagger
+ * /api/gastos/eliminar/{id}:
+ *   delete:
+ *     summary: Eliminar un gasto
+ *     tags: [Gastos]
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdRuta'
+ *     responses:
+ *       200:
+ *         description: Gasto eliminado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         $ref: '#/components/responses/NoEncontrado'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.delete(
     "/eliminar/:id",
     [

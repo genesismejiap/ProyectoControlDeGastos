@@ -1,4 +1,9 @@
 
+/**
+ * Rutas de proyectos.
+ * Prefijo: /api/proyectos
+ */
+
 import { Router } from "express";
 import { body, param, query } from "express-validator";
 import {
@@ -62,9 +67,61 @@ const validacionesProyecto = [
 ];
 
 
+/**
+ * @swagger
+ * /api/proyectos:
+ *   get:
+ *     summary: Consultar todos los proyectos
+ *     tags: [Proyectos]
+ *     responses:
+ *       200:
+ *         description: Lista de proyectos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 proyectos:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Proyecto'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.get("/", consultarProyectos);
 
 
+/**
+ * @swagger
+ * /api/proyectos/buscar:
+ *   get:
+ *     summary: Buscar proyectos por nombre
+ *     description: Búsqueda parcial (contiene el texto indicado).
+ *     tags: [Proyectos]
+ *     parameters:
+ *       - in: query
+ *         name: nombre
+ *         required: true
+ *         description: Texto a buscar dentro del nombre del proyecto
+ *         schema:
+ *           type: string
+ *           example: bodega
+ *     responses:
+ *       200:
+ *         description: Proyectos que coinciden con la búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Proyecto'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         $ref: '#/components/responses/NoEncontrado'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.get(
     "/buscar",
     [
@@ -79,9 +136,93 @@ router.get(
 );
 
 
+/**
+ * @swagger
+ * /api/proyectos:
+ *   post:
+ *     summary: Registrar un nuevo proyecto
+ *     tags: [Proyectos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProyectoEntrada'
+ *     responses:
+ *       201:
+ *         description: Proyecto registrado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Proyecto registrado correctamente
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.post("/", validacionesProyecto, crearProyecto);
 
 
+/**
+ * @swagger
+ * /api/proyectos/{id}:
+ *   put:
+ *     summary: Actualizar un proyecto
+ *     tags: [Proyectos]
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdRuta'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProyectoEntrada'
+ *     responses:
+ *       200:
+ *         description: Proyecto actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Proyecto actualizado correctamente
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         $ref: '#/components/responses/NoEncontrado'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ *   delete:
+ *     summary: Eliminar un proyecto
+ *     tags: [Proyectos]
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdRuta'
+ *     responses:
+ *       200:
+ *         description: Proyecto eliminado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Mensaje'
+ *       400:
+ *         $ref: '#/components/responses/ErrorValidacion'
+ *       404:
+ *         $ref: '#/components/responses/NoEncontrado'
+ *       500:
+ *         $ref: '#/components/responses/ErrorServidor'
+ */
 router.put(
     "/:id",
     [

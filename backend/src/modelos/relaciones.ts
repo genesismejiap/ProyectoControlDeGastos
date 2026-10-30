@@ -1,4 +1,12 @@
 
+/**
+ * Asociaciones entre los modelos de Sequelize.
+ *
+ * Proyecto 1 ── N Presupuesto 1 ── N DetallePresupuesto N ── 1 Categoria
+ *
+ * Se importa una sola vez desde server.ts para registrar las relaciones.
+ */
+
 import { Proyecto } from "./proyectoModelo.js";
 import { Presupuesto } from "./presupuestoModelo.js";
 import DetallePresupuesto from "./detallePresupuestoModelo.js";

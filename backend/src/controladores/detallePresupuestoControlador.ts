@@ -1,4 +1,8 @@
 
+/**
+ * Controladores de detalles de presupuesto (CRUD).
+ */
+
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 
@@ -6,7 +10,13 @@ import { DetallePresupuesto } from "../modelos/detallePresupuestoModelo.js";
 import { Presupuesto } from "../modelos/presupuestoModelo.js";
 import { Categoria } from "../modelos/categoriaModelo.js";
 
-// Registrar un nuevo detalle de presupuesto
+/**
+ * Registra un detalle (entregable) dentro de un presupuesto.
+ * La categoría se recibe por nombre y se convierte a su ID.
+ *
+ * Body: { presupuesto_id, categoria, entregable, cantidad, precio_unitario }
+ * Respuestas: 201 creado · 400 validación · 404 presupuesto o categoría inexistente · 500 error
+ */
 export const crearDetallePresupuesto = async (
     req: Request,
     res: Response
@@ -79,7 +89,11 @@ const detalle = await DetallePresupuesto.create({
     }
 };
 
-// Consultar todos los detalles de presupuestos
+/**
+ * Devuelve todos los detalles de presupuestos.
+ *
+ * Respuestas: 200 { detalles } · 500 error
+ */
 export const consultarDetallesPresupuesto = async (
     req: Request,
     res: Response
@@ -100,7 +114,12 @@ export const consultarDetallesPresupuesto = async (
     }
 };
 
-// Actualizar un detalle de presupuesto
+/**
+ * Actualiza un detalle de presupuesto existente.
+ *
+ * Params: id · Body: { presupuesto_id, categoria, entregable, cantidad, precio_unitario }
+ * Respuestas: 200 actualizado · 400 validación · 404 detalle, presupuesto o categoría inexistente · 500 error
+ */
 export const actualizarDetallePresupuesto = async (
     req: Request,
     res: Response
@@ -186,7 +205,12 @@ export const actualizarDetallePresupuesto = async (
     }
 };
 
-// Eliminar un detalle de presupuesto
+/**
+ * Elimina un detalle de presupuesto por su ID.
+ *
+ * Params: id
+ * Respuestas: 200 eliminado · 400 ID inválido · 404 no existe · 500 error
+ */
 export const eliminarDetallePresupuesto = async (
     req: Request,
     res: Response

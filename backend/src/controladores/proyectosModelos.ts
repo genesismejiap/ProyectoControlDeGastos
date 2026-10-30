@@ -1,11 +1,19 @@
 
+/**
+ * Controladores de proyectos (CRUD y búsqueda por nombre).
+ */
+
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { validationResult } from "express-validator";
 import { Proyecto } from "../modelos/proyectoModelo.js";
 
 
-// CONSULTAR TODOS LOS PROYECTOS
+/**
+ * Devuelve todos los proyectos.
+ *
+ * Respuestas: 200 { proyectos } · 500 error
+ */
 export const consultarProyectos = async (
     req: Request,
     res: Response
@@ -25,7 +33,12 @@ export const consultarProyectos = async (
 };
 
 
-// BUSCAR PROYECTO POR NOMBRE
+/**
+ * Busca proyectos cuyo nombre contenga el texto indicado (LIKE %nombre%).
+ *
+ * Query: nombre
+ * Respuestas: 200 arreglo de proyectos · 400 nombre vacío · 404 sin coincidencias · 500 error
+ */
 export const buscarProyecto = async (
     req: Request,
     res: Response
@@ -74,7 +87,13 @@ export const buscarProyecto = async (
 };
 
 
-// ACTUALIZAR PROYECTO
+/**
+ * Actualiza todos los datos de un proyecto.
+ * Los campos opcionales que no se envíen quedan en null.
+ *
+ * Params: id · Body: { nombre, presupuesto, descripcion?, ubicacion?, fecha_inicio?, fecha_fin? }
+ * Respuestas: 200 { mensaje, id } · 400 validación · 404 no existe · 500 error
+ */
 export const actualizarProyecto = async (
     req: Request,
     res: Response
@@ -152,7 +171,12 @@ export const actualizarProyecto = async (
 };
 
 
-// CREAR PROYECTO
+/**
+ * Registra un nuevo proyecto.
+ *
+ * Body: { nombre, presupuesto, descripcion?, ubicacion?, fecha_inicio?, fecha_fin? }
+ * Respuestas: 201 { mensaje, id } · 400 validación · 500 error
+ */
 export const crearProyecto = async (
     req: Request,
     res: Response
@@ -212,7 +236,12 @@ export const crearProyecto = async (
 };
 
 
-// ELIMINAR PROYECTO
+/**
+ * Elimina un proyecto por su ID.
+ *
+ * Params: id
+ * Respuestas: 200 eliminado · 400 ID inválido · 404 no existe · 500 error
+ */
 export const eliminarProyecto = async (
     req: Request,
     res: Response
