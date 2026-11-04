@@ -3,6 +3,7 @@
  * Asociaciones entre los modelos de Sequelize.
  *
  * Proyecto 1 ── N Presupuesto 1 ── N DetallePresupuesto N ── 1 Categoria
+ * Usuario 1 ── N Archivo
  *
  * Se importa una sola vez desde server.ts para registrar las relaciones.
  */
@@ -11,6 +12,8 @@ import { Proyecto } from "./proyectoModelo.js";
 import { Presupuesto } from "./presupuestoModelo.js";
 import DetallePresupuesto from "./detallePresupuestoModelo.js";
 import Categoria from "./categoriaModelo.js";
+import { Usuario } from "./usuarioModelo.js";
+import { Archivo } from "./archivoModelo.js";
 
 // Relación entre proyectos y presupuestos
 Proyecto.hasMany(Presupuesto, {
@@ -37,4 +40,13 @@ Categoria.hasMany(DetallePresupuesto, {
 
 DetallePresupuesto.belongsTo(Categoria, {
     foreignKey: "categoria_id"
+});
+
+// relación entre usuarios y sus archivos subidos
+Usuario.hasMany(Archivo, {
+    foreignKey: "usuario_id"
+});
+
+Archivo.belongsTo(Usuario, {
+    foreignKey: "usuario_id"
 });

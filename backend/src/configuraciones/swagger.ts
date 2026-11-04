@@ -30,7 +30,8 @@ const opciones: swaggerJSDoc.Options = {
             version: "1.0.0",
             description:
                 "API REST para administrar proyectos, presupuestos, detalles de presupuesto, " +
-                "categorías, gastos, usuarios y envío de correos electrónicos."
+                "categorías, gastos, usuarios, envío de correos electrónicos e imágenes y documentos " +
+                "de cada usuario."
         },
         servers: [
             {
@@ -46,7 +47,13 @@ const opciones: swaggerJSDoc.Options = {
             { name: "Detalle de presupuestos", description: "Entregables de cada presupuesto" },
             { name: "Categorías", description: "Categorías de gastos y entregables" },
             { name: "Gastos", description: "Registro de gastos por proyecto" },
-            { name: "Correos", description: "Envío de correos electrónicos (requiere token)" }
+            { name: "Correos", description: "Envío de correos electrónicos (requiere token)" },
+            { name: "Imágenes", description: "Subida de imágenes JPG y PNG (requiere token)" },
+            { name: "Documentos", description: "Subida de documentos PDF, Word y Excel (requiere token)" },
+            {
+                name: "Archivos",
+                description: "Consulta, descarga y eliminación de las imágenes y documentos propios (requiere token)"
+            }
         ],
         components: {
             securitySchemes: {
@@ -263,6 +270,32 @@ const opciones: swaggerJSDoc.Options = {
                         asunto: { type: "string", example: "Reporte de gastos" },
                         mensaje: { type: "string", example: "Adjunto el resumen del mes." }
                     }
+                },
+
+                // ---------- archivos (imágenes y documentos) ----------
+                Archivo: {
+                    type: "object",
+                    properties: {
+                        id: { type: "integer", example: 1 },
+                        tipo: { type: "string", enum: ["imagen", "documento"], example: "documento" },
+                        nombre: {
+                            type: "string",
+                            description: "Nombre único con el que se guardó en el servidor",
+                            example: "1762207030000-123456789.pdf"
+                        },
+                        nombre_original: { type: "string", example: "factura-cemento.pdf" },
+                        mimetype: { type: "string", example: "application/pdf" },
+                        tamano_bytes: { type: "integer", example: 245760 },
+                        fecha_subida: { type: "string", format: "date-time", example: "2026-11-03T22:17:10.000Z" },
+                        url_descarga: { type: "string", example: "/api/archivos/1/descargar" }
+                    }
+                },
+                ArchivoSubido: {
+                    type: "object",
+                    properties: {
+                        mensaje: { type: "string", example: "Documento recibido, validado y guardado correctamente" },
+                        archivo: { $ref: "#/components/schemas/Archivo" }
+                    }
                 }
             },
             responses: {
@@ -271,6 +304,24 @@ const opciones: swaggerJSDoc.Options = {
                     content: {
                         "application/json": {
                             schema: { $ref: "#/components/schemas/ErrorValidacion" }
+                        }
+                    }
+                },
+                NoAutenticado: {
+                    description: "No se envió el token o es inválido / expirado",
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Mensaje" },
+                            example: { mensaje: "Debes iniciar sesión para acceder a este recurso" }
+                        }
+                    }
+                },
+                SinPermiso: {
+                    description: "El recurso pertenece a otro usuario",
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Mensaje" },
+                            example: { mensaje: "No tienes permiso para acceder a este archivo" }
                         }
                     }
                 },

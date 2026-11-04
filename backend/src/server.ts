@@ -33,6 +33,9 @@ import usuarioRutas from "./rutas/usuarioRutas.js";
 
 import correoRutas from "./rutas/correoRutas.js";
 import imagenRutas from "./rutas/imagenRutas.js";
+import documentoRutas from "./rutas/documentoRutas.js";
+import archivoRutas from "./rutas/archivoRutas.js";
+import { Archivo } from "./modelos/archivoModelo.js";
 
 const app = express();
 const PORT = 3000;
@@ -46,8 +49,8 @@ const __dirname = path.dirname(__filename);
 // Servir los archivos de la carpeta frontend
 app.use(express.static(path.join(__dirname, "../../frontend")));
 
-// Servir las imágenes subidas en la carpeta uploads
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+// la carpeta uploads no se publica como estática: los archivos se descargan
+// por /api/archivos, que verifica que pertenezcan al usuario del token
 
 // Documentación interactiva de la API (Swagger UI)
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(especificacionSwagger));
@@ -98,6 +101,12 @@ app.use("/api/correos", correoRutas);
 // Rutas para subir y validar imágenes con Multer
 app.use("/api/imagenes", imagenRutas);
 
+// rutas para subir y validar documentos con multer
+app.use("/api/documentos", documentoRutas);
+
+// rutas para consultar, descargar y eliminar imágenes y documentos
+app.use("/api/archivos", archivoRutas);
+
 /**
  * Conecta con la base de datos, sincroniza las tablas necesarias
  * y pone el servidor a escuchar en el puerto configurado.
@@ -117,11 +126,14 @@ async function iniciarServidor() {
         // Crear la tabla usuarios si no existe
         await Usuario.sync();
 
+        // crear la tabla archivos si no existe (después de usuarios por la fk)
+        await Archivo.sync();
+
         console.log("Tablas de presupuestos sincronizadas correctamente");
 
         app.listen(PORT, () => {
             console.log(`Servidor en http://localhost:${PORT}`);
-            console.log(`Documentación en http://localhost:${PORT}/swagger`);
+            console.log(`Swagger en http://localhost:${PORT}/swagger`);
         });
 
     } catch (error) {
