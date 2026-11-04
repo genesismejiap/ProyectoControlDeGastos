@@ -32,6 +32,7 @@ import { fileURLToPath } from "url";
 import usuarioRutas from "./rutas/usuarioRutas.js";
 
 import correoRutas from "./rutas/correoRutas.js";
+import imagenRutas from "./rutas/imagenRutas.js";
 
 const app = express();
 const PORT = 3000;
@@ -44,6 +45,9 @@ const __dirname = path.dirname(__filename);
 
 // Servir los archivos de la carpeta frontend
 app.use(express.static(path.join(__dirname, "../../frontend")));
+
+// Servir las imágenes subidas en la carpeta uploads
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Documentación interactiva de la API (Swagger UI)
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(especificacionSwagger));
@@ -90,6 +94,9 @@ app.use("/api/gastos", gastosRutas);
 app.use("/api/usuarios", usuarioRutas);
 //Rutas para enviar correo electronicos
 app.use("/api/correos", correoRutas);
+
+// Rutas para subir y validar imágenes con Multer
+app.use("/api/imagenes", imagenRutas);
 
 /**
  * Conecta con la base de datos, sincroniza las tablas necesarias
