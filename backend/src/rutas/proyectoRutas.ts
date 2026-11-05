@@ -8,6 +8,7 @@ import {
 	actualizarProyecto,
 	eliminarProyecto
 } from "../controladores/proyectosModelos.js";
+import { validarCampos } from "../middlewares/validarCampos.js";
 
 const router = Router();
 
@@ -71,15 +72,17 @@ router.get(
         query("nombre")
             .isString()
             .withMessage("El nombre del proyecto debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("Debes ingresar el nombre del proyecto")
     ],
+    validarCampos,
     buscarProyecto
 );
 
 
-router.post("/", validacionesProyecto, crearProyecto);
+router.post("/", validacionesProyecto, validarCampos, crearProyecto);
 
 
 router.put(
@@ -90,6 +93,7 @@ router.put(
             .withMessage("El ID del proyecto debe ser un número entero positivo"),
         ...validacionesProyecto
     ],
+    validarCampos,
     actualizarProyecto
 );
 
@@ -100,6 +104,7 @@ router.delete(
             .isInt({ min: 1 })
             .withMessage("El ID del proyecto debe ser un número entero positivo")
     ],
+    validarCampos,
     eliminarProyecto
 );
 export default router;

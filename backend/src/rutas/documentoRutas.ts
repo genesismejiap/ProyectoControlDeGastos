@@ -7,11 +7,12 @@
  */
 
 import { NextFunction, Request, Response, Router } from "express";
-import { body, validationResult } from "express-validator";
+import { body } from "express-validator";
 import { uploadDocumento, manejarSubida } from "../configuraciones/multerConfig.js";
 import { subirDocumento } from "../controladores/documentoControlador.js";
 import { Proyecto } from "../modelos/proyectoModelo.js";
 import { verificarToken } from "../seguridad/verificarToken.js";
+import { validarCampos } from "../middlewares/validarCampos.js";
 
 const router = Router();
 
@@ -20,16 +21,6 @@ const validarProyecto = async (
     res: Response,
     next: NextFunction
 ): Promise<void> => {
-    const errores = validationResult(req);
-
-    if (!errores.isEmpty()) {
-        res.status(400).json({
-            mensaje: "Datos inválidos",
-            errores: errores.array()
-        });
-        return;
-    }
-
     try {
         const proyecto = await Proyecto.findByPk(req.body.proyecto_id);
 
@@ -42,11 +33,7 @@ const validarProyecto = async (
 
         next();
     } catch (error) {
-        console.error("Error al validar el proyecto del documento:", error);
-
-        res.status(500).json({
-            mensaje: "Error al validar el proyecto del documento"
-        });
+        next(error);
     }
 };
 
@@ -111,6 +98,7 @@ router.post(
         .withMessage("El ID del proyecto debe ser un número entero positivo")
         .bail()
         .toInt(),
+    validarCampos,
     validarProyecto,
     manejarSubida(
         uploadDocumento.single("documento"),

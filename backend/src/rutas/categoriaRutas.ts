@@ -3,6 +3,7 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 
 import { crearCategoria, consultarCategorias, eliminarCategoria, actualizarCategoria } from "../controladores/categoriasModelo.js";
+import { validarCampos } from "../middlewares/validarCampos.js";
 
 const router = Router();
 
@@ -14,6 +15,9 @@ router.post(
     "/guardar",
     [
         body("nombre")
+            .isString()
+            .withMessage("El nombre de la categoría debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("El nombre de la categoría es obligatorio")
@@ -25,6 +29,7 @@ router.post(
             .isString()
             .withMessage("La descripción debe ser un texto")
     ],
+    validarCampos,
     crearCategoria
 );
 
@@ -36,6 +41,7 @@ router.delete(
             .isInt({ min: 1 })
             .withMessage("El ID de la categoría debe ser un número entero positivo")
     ],
+    validarCampos,
     eliminarCategoria
 );
 
@@ -48,6 +54,9 @@ router.put(
             .withMessage("El ID de la categoría debe ser válido"),
 
         body("nombre")
+            .isString()
+            .withMessage("El nombre de la categoría debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("El nombre de la categoría es obligatorio")
@@ -59,6 +68,7 @@ router.put(
             .isString()
             .withMessage("La descripción debe ser un texto")
     ],
+    validarCampos,
     actualizarCategoria
 );
 

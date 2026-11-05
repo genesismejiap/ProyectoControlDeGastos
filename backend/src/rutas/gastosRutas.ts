@@ -3,6 +3,7 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 
 import { crearGasto, consultarGastos, actualizarGasto, eliminarGasto } from "../controladores/gastosControlador.js";
+import { validarCampos } from "../middlewares/validarCampos.js";
 
 const router = Router();
 // Ruta para consultar todos los gastos
@@ -19,6 +20,9 @@ router.post(
             .withMessage("El ID del proyecto debe ser válido"),
 
         body("categoria")
+            .isString()
+            .withMessage("El nombre de la categoría debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("El nombre de la categoría es obligatorio")
@@ -26,6 +30,9 @@ router.post(
             .withMessage("El nombre de la categoría no debe superar los 100 caracteres"),
 
         body("descripcion")
+            .isString()
+            .withMessage("La descripción del gasto debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("La descripción del gasto es obligatoria")
@@ -34,7 +41,8 @@ router.post(
 
         body("monto")
             .isFloat({ min: 0 })
-            .withMessage("El monto debe ser un número mayor o igual a cero"),
+            .withMessage("El monto debe ser un número mayor o igual a cero")
+            .toFloat(),
 
         body("fecha")
             .notEmpty()
@@ -42,6 +50,7 @@ router.post(
             .isISO8601({ strict: true })
             .withMessage("La fecha debe ser válida")
     ],
+    validarCampos,
     crearGasto
 );
 
@@ -60,6 +69,9 @@ router.put(
             .withMessage("El ID del proyecto debe ser válido"),
 
         body("categoria")
+            .isString()
+            .withMessage("El nombre de la categoría debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("La categoría es obligatoria")
@@ -67,6 +79,9 @@ router.put(
             .withMessage("El nombre de la categoría no debe superar los 100 caracteres"),
 
         body("descripcion")
+            .isString()
+            .withMessage("La descripción del gasto debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("La descripción es obligatoria")
@@ -75,7 +90,8 @@ router.put(
 
         body("monto")
             .isFloat({ min: 0 })
-            .withMessage("El monto debe ser un número mayor o igual a cero"),
+            .withMessage("El monto debe ser un número mayor o igual a cero")
+            .toFloat(),
 
         body("fecha")
             .notEmpty()
@@ -83,6 +99,7 @@ router.put(
             .isISO8601({ strict: true })
             .withMessage("La fecha debe ser válida")
     ],
+    validarCampos,
     actualizarGasto
 );
 
@@ -94,6 +111,7 @@ router.delete(
             .isInt({ min: 1 })
             .withMessage("El ID del gasto debe ser un número entero positivo")
     ],
+    validarCampos,
     eliminarGasto
 );
 

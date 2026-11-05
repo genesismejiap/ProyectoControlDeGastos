@@ -8,6 +8,7 @@
  */
 
 import express from "express";
+import type { ErrorRequestHandler } from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { DataTypes } from "sequelize";
@@ -116,6 +117,33 @@ app.use("/api/archivos", archivoRutas);
 
 // rutas de reportes y estadísticas (totales de gastos, presupuestos y saldos)
 app.use("/api/reportes", reportesRutas);
+
+app.use((req, res) => {
+    res.status(404).json({
+        mensaje: "La ruta solicitada no existe"
+    });
+});
+
+const manejarErrores: ErrorRequestHandler = (error, req, res, next) => {
+    if (res.headersSent) {
+        next(error);
+        return;
+    }
+
+    if (error instanceof SyntaxError && "body" in error) {
+        res.status(400).json({
+            mensaje: "El cuerpo de la solicitud contiene JSON inválido"
+        });
+        return;
+    }
+
+    console.error(`Error inesperado en ${req.method} ${req.originalUrl}:`, error);
+    res.status(500).json({
+        mensaje: "Error interno del servidor"
+    });
+};
+
+app.use(manejarErrores);
 
 /**
  * Conecta con la base de datos, sincroniza las tablas necesarias

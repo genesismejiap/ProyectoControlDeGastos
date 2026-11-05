@@ -1,6 +1,7 @@
 
 import { Router } from "express";
 import { body,param } from "express-validator";
+import { validarCampos } from "../middlewares/validarCampos.js";
 
 import { crearPresupuesto,
      consultarPresupuestos, 
@@ -41,6 +42,7 @@ router.put(
             .isIn(["Borrador", "Aprobado"])
             .withMessage("El estado debe ser Borrador o Aprobado")
     ],
+    validarCampos,
     actualizarPresupuesto
 );
 
@@ -66,6 +68,7 @@ router.post(
             .isIn(["Borrador", "Aprobado"])
             .withMessage("El estado debe ser Borrador o Aprobado")
     ],
+    validarCampos,
     crearPresupuesto
 );
 
@@ -78,6 +81,7 @@ router.delete(
             .isInt({ min: 1 })
             .withMessage("El ID del presupuesto debe ser un número entero positivo")
     ],
+    validarCampos,
     eliminarPresupuesto
 );
 

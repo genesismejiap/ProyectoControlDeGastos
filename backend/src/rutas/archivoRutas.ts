@@ -6,8 +6,8 @@
  * todas requieren token y solo permiten acceder a los archivos del propio usuario.
  */
 
-import { Router, Request, Response, NextFunction } from "express";
-import { param, query, validationResult } from "express-validator";
+import { Router } from "express";
+import { param, query } from "express-validator";
 
 import {
     consultarArchivos,
@@ -16,30 +16,9 @@ import {
     eliminarArchivo
 } from "../controladores/archivoControlador.js";
 import { verificarToken } from "../seguridad/verificarToken.js";
+import { validarCampos } from "../middlewares/validarCampos.js";
 
 const router = Router();
-
-/**
- * middleware que revisa el resultado de express-validator.
- * si hay errores responde 400 con la lista; si no, continúa al controlador.
- */
-const validarCampos = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-): void => {
-    const errores = validationResult(req);
-
-    if (!errores.isEmpty()) {
-        res.status(400).json({
-            mensaje: "Datos inválidos",
-            errores: errores.array()
-        });
-        return;
-    }
-
-    next();
-};
 
 // validación del id que llega en la ruta
 const validarId = [

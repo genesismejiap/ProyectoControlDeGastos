@@ -1,6 +1,7 @@
 
 import { Router } from "express";
 import { body, param } from "express-validator";
+import { validarCampos } from "../middlewares/validarCampos.js";
 
 
 import {
@@ -26,7 +27,10 @@ router.post(
 
        
         body("categoria")
-             .trim()
+            .isString()
+            .withMessage("El nombre de la categoría debe ser un texto")
+            .bail()
+            .trim()
              .notEmpty()
             .withMessage("El nombre de la categoría es obligatorio")
             .isLength({ max: 100 })
@@ -34,6 +38,9 @@ router.post(
 
 
         body("entregable")
+            .isString()
+            .withMessage("El entregable debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("El entregable es obligatorio")
@@ -47,7 +54,9 @@ router.post(
         body("precio_unitario")
             .isFloat({ min: 0 })
             .withMessage("El precio unitario debe ser un número mayor o igual a cero")
+            .toFloat()
     ],
+    validarCampos,
     crearDetallePresupuesto
 );
 
@@ -66,6 +75,9 @@ router.put(
             .withMessage("El ID del presupuesto debe ser válido"),
 
         body("categoria")
+            .isString()
+            .withMessage("El nombre de la categoría debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("La categoría es obligatoria")
@@ -73,6 +85,9 @@ router.put(
             .withMessage("El nombre de la categoría no debe superar los 100 caracteres"),
 
         body("entregable")
+            .isString()
+            .withMessage("El entregable debe ser un texto")
+            .bail()
             .trim()
             .notEmpty()
             .withMessage("El entregable es obligatorio")
@@ -86,7 +101,9 @@ router.put(
         body("precio_unitario")
            .isFloat({ min: 0 })
             .withMessage("El precio unitario debe ser un número mayor o igual a cero")
+            .toFloat()
     ],
+    validarCampos,
     actualizarDetallePresupuesto
 );
 
@@ -98,6 +115,7 @@ router.delete(
             .isInt({ min: 1 })
             .withMessage("El ID del detalle debe ser un número entero positivo")
     ],
+    validarCampos,
     eliminarDetallePresupuesto
 );
 
