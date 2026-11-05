@@ -120,6 +120,46 @@
         "url": "http://localhost:3000/api/imagenes/subir",
         "description": "Seleccionar un PDF o TXT. Respuesta esperada: 400 porque solo se aceptan JPG, JPEG y PNG."
       }
+    },
+    {
+      "name": "7. Validar imagen mayor de 5 MB",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "imagen",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/imagenes/subir",
+        "description": "Seleccionar una imagen mayor de 5 MB. Respuesta esperada: 400 por superar el tamaño permitido."
+      }
+    },
+    {
+      "name": "8. Consultar ID inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/imagenes/999999",
+        "description": "Respuesta esperada: 404 porque la imagen no existe."
+      }
+    },
+    {
+      "name": "9. Listar imágenes sin token",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/imagenes",
+        "description": "Respuesta esperada: 401 porque no se envía el token de autenticación."
+      }
     }
   ]
 }
