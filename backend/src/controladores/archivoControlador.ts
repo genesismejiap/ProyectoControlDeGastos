@@ -32,7 +32,7 @@ export const formatearArchivo = (archivo: Archivo) => ({
 /**
  * elimina un archivo del disco sin fallar si ya no existe.
  */
-const borrarDelDisco = async (ruta: string): Promise<void> => {
+export const borrarDelDisco = async (ruta: string): Promise<void> => {
     try {
         await fs.promises.unlink(ruta);
     } catch (error) {

@@ -41,7 +41,7 @@ const opciones: swaggerJSDoc.Options = {
         ],
         tags: [
             { name: "General", description: "Estado de la API" },
-            { name: "Usuarios", description: "Registro e inicio de sesión" },
+            { name: "Usuarios", description: "Registro, inicio de sesión y administración de usuarios (listar y eliminar: solo administradores)" },
             { name: "Proyectos", description: "Administración de proyectos" },
             { name: "Presupuestos", description: "Administración de presupuestos" },
             { name: "Detalle de presupuestos", description: "Entregables de cada presupuesto" },
@@ -366,7 +366,46 @@ const opciones: swaggerJSDoc.Options = {
                     properties: {
                         id: { type: "integer", example: 1 },
                         nombre: { type: "string", example: "Ana Pérez" },
-                        correo: { type: "string", format: "email", example: "ana@correo.com" }
+                        correo: { type: "string", format: "email", example: "ana@correo.com" },
+                        rol: { type: "string", enum: ["usuario", "administrador"], example: "usuario" },
+                        creado: { type: "string", format: "date-time", example: "2026-11-03T22:17:10.000Z" },
+                        actualizado: { type: "string", format: "date-time", example: "2026-11-03T22:17:10.000Z" }
+                    }
+                },
+                UsuariosPaginados: {
+                    type: "object",
+                    properties: {
+                        total: { type: "integer", example: 25 },
+                        pagina: { type: "integer", example: 1 },
+                        limite: { type: "integer", example: 10 },
+                        total_paginas: { type: "integer", example: 3 },
+                        usuarios: {
+                            type: "array",
+                            items: { $ref: "#/components/schemas/UsuarioPublico" }
+                        }
+                    }
+                },
+                ActualizarUsuarioEntrada: {
+                    type: "object",
+                    description: "Todos los campos son opcionales, pero se debe enviar al menos uno",
+                    properties: {
+                        nombre: { type: "string", example: "Ana María Pérez" },
+                        correo: { type: "string", format: "email", example: "ana.nueva@correo.com" },
+                        contrasena: {
+                            type: "string", format: "password", minLength: 8, maxLength: 72,
+                            description: "Nueva contraseña",
+                            example: "nuevaClave123"
+                        },
+                        contrasena_actual: {
+                            type: "string", format: "password",
+                            description: "Obligatoria al cambiar la propia contraseña",
+                            example: "secreta123"
+                        },
+                        rol: {
+                            type: "string", enum: ["usuario", "administrador"],
+                            description: "Solo un administrador puede cambiarlo (y nunca el suyo)",
+                            example: "administrador"
+                        }
                     }
                 },
                 RegistroEntrada: {
@@ -443,7 +482,7 @@ const opciones: swaggerJSDoc.Options = {
                     }
                 },
                 SinPermiso: {
-                    description: "El recurso pertenece a otro usuario",
+                    description: "No tienes permiso: el recurso pertenece a otro usuario o la operación es solo para administradores",
                     content: {
                         "application/json": {
                             schema: { $ref: "#/components/schemas/Mensaje" },

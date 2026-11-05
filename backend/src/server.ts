@@ -25,7 +25,8 @@ import presupuestoRutas from "./rutas/presupuestoRutas.js";
 import detallePresupuestoRutas from "./rutas/detallePresupuestoRutas.js";
 
 import gastosRutas from "./rutas/gastosRutas.js";
-import { Usuario } from "./modelos/usuarioModelo.js";
+import { Usuario, ROLES } from "./modelos/usuarioModelo.js";
+import { DataTypes } from "sequelize";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -134,6 +135,20 @@ async function iniciarServidor() {
 
         // Crear la tabla usuarios si no existe
         await Usuario.sync();
+
+        // si la tabla usuarios ya existía de antes, agregarle la columna `rol`
+        // (sync() solo crea tablas nuevas, no modifica las existentes)
+        const columnasUsuarios = await db.getQueryInterface().describeTable("usuarios");
+
+        if (!columnasUsuarios.rol) {
+            await db.getQueryInterface().addColumn("usuarios", "rol", {
+                type: DataTypes.ENUM(...ROLES),
+                allowNull: false,
+                defaultValue: "usuario"
+            });
+
+            console.log("Columna 'rol' agregada a la tabla usuarios");
+        }
 
         // crear la tabla archivos si no existe (después de usuarios por la fk)
         await Archivo.sync();
