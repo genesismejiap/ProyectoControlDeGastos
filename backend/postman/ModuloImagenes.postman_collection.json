@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "a12d8b5e-61a9-4f87-9345-8a72a848c325",
+    "name": "Control de Gastos - Módulo de Imágenes",
+    "description": "Pruebas manuales para subir, listar, consultar, reemplazar y eliminar imágenes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "PEGAR_TOKEN_AQUI",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "0. Iniciar sesión",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"correo\": \"correo@ejemplo.com\",\n  \"contrasena\": \"contrasena123\"\n}"
+        },
+        "url": "http://localhost:3000/api/usuarios/login",
+        "description": "Editar correo y contraseña. Copiar el token de la respuesta y pegarlo en Authorization de la colección."
+      }
+    },
+    {
+      "name": "1. Subir imagen",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "imagen",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/imagenes/subir",
+        "description": "Seleccionar una imagen JPG, JPEG o PNG menor o igual a 5 MB. Guardar el id devuelto para las pruebas siguientes. Respuesta esperada: 201."
+      }
+    },
+    {
+      "name": "2. Listar imágenes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/imagenes",
+        "description": "Respuesta esperada: 200 con total e imagenes."
+      }
+    },
+    {
+      "name": "3. Consultar imagen",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/imagenes/1",
+        "description": "Cambiar 1 por el id obtenido al subir la imagen. Respuesta esperada: 200."
+      }
+    },
+    {
+      "name": "4. Reemplazar imagen",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "imagen",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/imagenes/1",
+        "description": "Cambiar 1 por el id de la imagen y seleccionar el nuevo archivo. Respuesta esperada: 200."
+      }
+    },
+    {
+      "name": "5. Eliminar imagen",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "http://localhost:3000/api/imagenes/1",
+        "description": "Cambiar 1 por el id de la imagen. Respuesta esperada: 200."
+      }
+    },
+    {
+      "name": "6. Validar formato incorrecto",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "imagen",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/imagenes/subir",
+        "description": "Seleccionar un PDF o TXT. Respuesta esperada: 400 porque solo se aceptan JPG, JPEG y PNG."
+      }
+    }
+  ]
+}
