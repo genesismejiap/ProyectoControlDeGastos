@@ -25,6 +25,7 @@ const validarId = [
     param("id")
         .isInt({ min: 1 })
         .withMessage("El ID del archivo debe ser un número entero positivo")
+        .toInt()
 ];
 
 // todas las rutas de archivos exigen haber iniciado sesión
@@ -86,6 +87,7 @@ router.get(
             .optional()
             .isInt({ min: 1 })
             .withMessage("El ID del proyecto debe ser un número entero positivo")
+            .toInt()
     ],
     validarCampos,
     consultarArchivos

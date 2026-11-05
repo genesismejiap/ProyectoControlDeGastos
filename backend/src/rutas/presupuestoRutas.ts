@@ -22,17 +22,22 @@ router.put(
     [
         param("id")
             .isInt({ min: 1 })
-            .withMessage("El ID del presupuesto debe ser válido"),
+            .withMessage("El ID del presupuesto debe ser válido")
+            .toInt(),
 
         body("proyecto_id")
             .notEmpty()
             .withMessage("El proyecto es obligatorio")
             .isInt({ min: 1 })
-            .withMessage("El ID del proyecto debe ser válido"),
+            .withMessage("El ID del proyecto debe ser válido")
+            .toInt(),
 
         body("fecha")
             .notEmpty()
             .withMessage("La fecha es obligatoria")
+            .matches(/^\d{4}-\d{2}-\d{2}$/)
+            .withMessage("La fecha debe tener el formato AAAA-MM-DD")
+            .bail()
             .isISO8601({ strict: true })
             .withMessage("La fecha debe ser válida"),
 
@@ -55,11 +60,15 @@ router.post(
             .notEmpty()
             .withMessage("El proyecto es obligatorio")
             .isInt({ min: 1 })
-            .withMessage("El ID del proyecto debe ser un número entero positivo"),
+            .withMessage("El ID del proyecto debe ser un número entero positivo")
+            .toInt(),
 
         body("fecha")
             .notEmpty()
             .withMessage("La fecha es obligatoria")
+            .matches(/^\d{4}-\d{2}-\d{2}$/)
+            .withMessage("La fecha debe tener el formato AAAA-MM-DD")
+            .bail()
             .isISO8601({ strict: true })
             .withMessage("La fecha debe ser válida"),
 
@@ -80,6 +89,7 @@ router.delete(
         param("id")
             .isInt({ min: 1 })
             .withMessage("El ID del presupuesto debe ser un número entero positivo")
+            .toInt()
     ],
     validarCampos,
     eliminarPresupuesto

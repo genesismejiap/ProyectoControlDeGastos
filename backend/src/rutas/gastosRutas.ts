@@ -17,7 +17,8 @@ router.post(
             .notEmpty()
             .withMessage("El proyecto es obligatorio")
             .isInt({ min: 1 })
-            .withMessage("El ID del proyecto debe ser válido"),
+            .withMessage("El ID del proyecto debe ser válido")
+            .toInt(),
 
         body("categoria")
             .isString()
@@ -40,13 +41,16 @@ router.post(
             .withMessage("La descripción no debe superar los 255 caracteres"),
 
         body("monto")
-            .isFloat({ min: 0 })
-            .withMessage("El monto debe ser un número mayor o igual a cero")
+            .isFloat({ min: 0, max: 9999999999.99 })
+            .withMessage("El monto debe estar entre 0 y 9999999999.99")
             .toFloat(),
 
         body("fecha")
             .notEmpty()
             .withMessage("La fecha es obligatoria")
+            .matches(/^\d{4}-\d{2}-\d{2}$/)
+            .withMessage("La fecha debe tener el formato AAAA-MM-DD")
+            .bail()
             .isISO8601({ strict: true })
             .withMessage("La fecha debe ser válida")
     ],
@@ -60,13 +64,15 @@ router.put(
     [
         param("id")
             .isInt({ min: 1 })
-            .withMessage("El ID del gasto debe ser válido"),
+            .withMessage("El ID del gasto debe ser válido")
+            .toInt(),
 
         body("proyecto_id")
             .notEmpty()
             .withMessage("El proyecto es obligatorio")
             .isInt({ min: 1 })
-            .withMessage("El ID del proyecto debe ser válido"),
+            .withMessage("El ID del proyecto debe ser válido")
+            .toInt(),
 
         body("categoria")
             .isString()
@@ -89,13 +95,16 @@ router.put(
             .withMessage("La descripción no debe superar los 255 caracteres"),
 
         body("monto")
-            .isFloat({ min: 0 })
-            .withMessage("El monto debe ser un número mayor o igual a cero")
+            .isFloat({ min: 0, max: 9999999999.99 })
+            .withMessage("El monto debe estar entre 0 y 9999999999.99")
             .toFloat(),
 
         body("fecha")
             .notEmpty()
             .withMessage("La fecha es obligatoria")
+            .matches(/^\d{4}-\d{2}-\d{2}$/)
+            .withMessage("La fecha debe tener el formato AAAA-MM-DD")
+            .bail()
             .isISO8601({ strict: true })
             .withMessage("La fecha debe ser válida")
     ],
@@ -110,6 +119,7 @@ router.delete(
         param("id")
             .isInt({ min: 1 })
             .withMessage("El ID del gasto debe ser un número entero positivo")
+            .toInt()
     ],
     validarCampos,
     eliminarGasto

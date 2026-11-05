@@ -23,7 +23,8 @@ router.post(
             .notEmpty()
             .withMessage("El presupuesto es obligatorio")
             .isInt({ min: 1 })
-            .withMessage("El ID del presupuesto debe ser válido"),
+            .withMessage("El ID del presupuesto debe ser válido")
+            .toInt(),
 
        
         body("categoria")
@@ -48,12 +49,13 @@ router.post(
             .withMessage("El entregable no debe superar los 150 caracteres"),
 
         body("cantidad")
-            .isInt({ min: 1 })
-            .withMessage("La cantidad debe ser un número entero mayor que cero"),
+            .isInt({ min: 1, max: 2147483647 })
+            .withMessage("La cantidad debe ser un entero entre 1 y 2147483647")
+            .toInt(),
 
         body("precio_unitario")
-            .isFloat({ min: 0 })
-            .withMessage("El precio unitario debe ser un número mayor o igual a cero")
+            .isFloat({ min: 0, max: 9999999999.99 })
+            .withMessage("El precio unitario debe estar entre 0 y 9999999999.99")
             .toFloat()
     ],
     validarCampos,
@@ -66,13 +68,15 @@ router.put(
     [
         param("id")
             .isInt({ min: 1 })
-            .withMessage("El ID del detalle debe ser válido"),
+            .withMessage("El ID del detalle debe ser válido")
+            .toInt(),
 
         body("presupuesto_id")
             .notEmpty()
             .withMessage("El presupuesto es obligatorio")
             .isInt({ min: 1 })
-            .withMessage("El ID del presupuesto debe ser válido"),
+            .withMessage("El ID del presupuesto debe ser válido")
+            .toInt(),
 
         body("categoria")
             .isString()
@@ -95,12 +99,13 @@ router.put(
             .withMessage("El entregable no debe superar los 150 caracteres"),
 
         body("cantidad")
-            .isInt({ min: 1 })
-            .withMessage("La cantidad debe ser mayor que cero"),
+            .isInt({ min: 1, max: 2147483647 })
+            .withMessage("La cantidad debe ser un entero entre 1 y 2147483647")
+            .toInt(),
 
         body("precio_unitario")
-           .isFloat({ min: 0 })
-            .withMessage("El precio unitario debe ser un número mayor o igual a cero")
+            .isFloat({ min: 0, max: 9999999999.99 })
+            .withMessage("El precio unitario debe estar entre 0 y 9999999999.99")
             .toFloat()
     ],
     validarCampos,
@@ -114,6 +119,7 @@ router.delete(
         param("id")
             .isInt({ min: 1 })
             .withMessage("El ID del detalle debe ser un número entero positivo")
+            .toInt()
     ],
     validarCampos,
     eliminarDetallePresupuesto

@@ -17,6 +17,7 @@ const validacionesProyecto = [
     body("nombre")
         .isString()
         .withMessage("El nombre del proyecto debe ser un texto")
+        .bail()
         .trim()
         .notEmpty()
         .withMessage("El nombre del proyecto es obligatorio")
@@ -38,17 +39,23 @@ const validacionesProyecto = [
     body("presupuesto")
         .notEmpty()
         .withMessage("El presupuesto es obligatorio")
-        .isFloat({ min: 0 })
-        .withMessage("El presupuesto debe ser un número mayor o igual a cero")
+        .isFloat({ min: 0, max: 9999999999.99 })
+        .withMessage("El presupuesto debe estar entre 0 y 9999999999.99")
         .toFloat(),
 
     body("fecha_inicio")
         .optional({ nullable: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage("La fecha de inicio debe tener el formato AAAA-MM-DD")
+        .bail()
         .isISO8601({ strict: true })
         .withMessage("La fecha de inicio debe ser válida"),
 
     body("fecha_fin")
         .optional({ nullable: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage("La fecha de fin debe tener el formato AAAA-MM-DD")
+        .bail()
         .isISO8601({ strict: true })
         .withMessage("La fecha de fin debe ser válida")
         .custom((fechaFin, { req }) => {
@@ -90,7 +97,8 @@ router.put(
     [
         param("id")
             .isInt({ min: 1 })
-            .withMessage("El ID del proyecto debe ser un número entero positivo"),
+            .withMessage("El ID del proyecto debe ser un número entero positivo")
+            .toInt(),
         ...validacionesProyecto
     ],
     validarCampos,
@@ -103,6 +111,7 @@ router.delete(
         param("id")
             .isInt({ min: 1 })
             .withMessage("El ID del proyecto debe ser un número entero positivo")
+            .toInt()
     ],
     validarCampos,
     eliminarProyecto

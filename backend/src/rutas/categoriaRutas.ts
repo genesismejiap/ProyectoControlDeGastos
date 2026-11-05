@@ -40,6 +40,7 @@ router.delete(
         param("id")
             .isInt({ min: 1 })
             .withMessage("El ID de la categoría debe ser un número entero positivo")
+            .toInt()
     ],
     validarCampos,
     eliminarCategoria
@@ -51,7 +52,8 @@ router.put(
     [
         param("id")
             .isInt({ min: 1 })
-            .withMessage("El ID de la categoría debe ser válido"),
+            .withMessage("El ID de la categoría debe ser válido")
+            .toInt(),
 
         body("nombre")
             .isString()
