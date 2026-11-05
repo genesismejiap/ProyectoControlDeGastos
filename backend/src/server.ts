@@ -8,6 +8,7 @@
  */
 
 import express from "express";
+import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { db } from "./configuraciones/db.js";
 import { especificacionSwagger } from "./configuraciones/swagger.js";
@@ -37,8 +38,13 @@ import documentoRutas from "./rutas/documentoRutas.js";
 import archivoRutas from "./rutas/archivoRutas.js";
 import { Archivo } from "./modelos/archivoModelo.js";
 
+import reportesRutas from "./rutas/reportesRutas.js";
+
 const app = express();
 const PORT = 3000;
+
+// Permitir que el frontend de React (que corre en otro puerto) consuma la API
+app.use(cors());
 
 // Permitir recibir datos en formato JSON
 app.use(express.json());
@@ -106,6 +112,9 @@ app.use("/api/documentos", documentoRutas);
 
 // rutas para consultar, descargar y eliminar imágenes y documentos
 app.use("/api/archivos", archivoRutas);
+
+// rutas de reportes y estadísticas (totales de gastos, presupuestos y saldos)
+app.use("/api/reportes", reportesRutas);
 
 /**
  * Conecta con la base de datos, sincroniza las tablas necesarias

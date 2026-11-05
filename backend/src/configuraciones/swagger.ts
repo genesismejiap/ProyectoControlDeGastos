@@ -47,6 +47,11 @@ const opciones: swaggerJSDoc.Options = {
             { name: "Detalle de presupuestos", description: "Entregables de cada presupuesto" },
             { name: "Categorías", description: "Categorías de gastos y entregables" },
             { name: "Gastos", description: "Registro de gastos por proyecto" },
+            {
+                name: "Reportes",
+                description:
+                    "Totales de gastos, presupuestos y saldos por proyecto, por categoría y por mes"
+            },
             { name: "Correos", description: "Envío de correos electrónicos (requiere token)" },
             { name: "Imágenes", description: "Subida de imágenes JPG y PNG (requiere token)" },
             { name: "Documentos", description: "Subida de documentos PDF, Word y Excel (requiere token)" },
@@ -71,6 +76,35 @@ const opciones: swaggerJSDoc.Options = {
                     required: true,
                     description: "ID del registro (entero positivo)",
                     schema: { type: "integer", minimum: 1, example: 1 }
+                },
+                Desde: {
+                    name: "desde",
+                    in: "query",
+                    required: false,
+                    description: "Fecha inicial del rango de gastos (inclusive)",
+                    schema: { type: "string", format: "date", example: "2026-01-01" }
+                },
+                Hasta: {
+                    name: "hasta",
+                    in: "query",
+                    required: false,
+                    description:
+                        "Fecha final del rango de gastos (inclusive). No puede ser anterior a `desde`.",
+                    schema: { type: "string", format: "date", example: "2026-12-31" }
+                },
+                ProyectoIdQuery: {
+                    name: "proyecto_id",
+                    in: "query",
+                    required: false,
+                    description: "Limitar el reporte a un solo proyecto",
+                    schema: { type: "integer", minimum: 1, example: 1 }
+                },
+                CategoriaIdQuery: {
+                    name: "categoria_id",
+                    in: "query",
+                    required: false,
+                    description: "Limitar el reporte a una sola categoría",
+                    schema: { type: "integer", minimum: 1, example: 2 }
                 }
             },
             schemas: {
@@ -231,6 +265,98 @@ const opciones: swaggerJSDoc.Options = {
                         descripcion: { type: "string", maxLength: 255, example: "Compra de cemento" },
                         monto: { type: "number", minimum: 0, example: 1280000 },
                         fecha: { type: "string", format: "date", example: "2026-02-10" }
+                    }
+                },
+
+                // ---------- Reportes y estadísticas ----------
+                // Todos los montos viajan como number (no como string DECIMAL)
+                // para que el frontend pueda operar con ellos directamente.
+                ResumenGeneral: {
+                    type: "object",
+                    properties: {
+                        total_proyectos: { type: "integer", example: 4 },
+                        total_categorias: { type: "integer", example: 6 },
+                        presupuesto_estimado: {
+                            type: "number",
+                            description: "Suma de proyectos.presupuesto",
+                            example: 450000000
+                        },
+                        presupuesto_aprobado: {
+                            type: "number",
+                            description:
+                                "Suma de cantidad × precio_unitario de los detalles cuyo presupuesto está en estado Aprobado",
+                            example: 412300000
+                        },
+                        total_gastado: { type: "number", example: 128750000 },
+                        saldo_estimado: {
+                            type: "number",
+                            description: "presupuesto_estimado - total_gastado",
+                            example: 321250000
+                        },
+                        saldo_aprobado: {
+                            type: "number",
+                            description: "presupuesto_aprobado - total_gastado",
+                            example: 283550000
+                        },
+                        porcentaje_utilizado: {
+                            type: "number",
+                            nullable: true,
+                            description: "null cuando el presupuesto es 0",
+                            example: 28.61
+                        },
+                        porcentaje_utilizado_aprobado: {
+                            type: "number",
+                            nullable: true,
+                            example: 31.23
+                        },
+                        cantidad_gastos: { type: "integer", example: 87 },
+                        desde: { type: "string", format: "date", nullable: true, example: "2026-01-01" },
+                        hasta: { type: "string", format: "date", nullable: true, example: "2026-12-31" }
+                    }
+                },
+                ResumenProyecto: {
+                    type: "object",
+                    properties: {
+                        proyecto_id: { type: "integer", example: 1 },
+                        nombre: { type: "string", example: "Construcción bodega" },
+                        presupuesto_estimado: { type: "number", example: 150000000 },
+                        presupuesto_aprobado: { type: "number", example: 142300000 },
+                        total_gastado: { type: "number", example: 48750000 },
+                        saldo_estimado: { type: "number", example: 101250000 },
+                        saldo_aprobado: { type: "number", example: 93550000 },
+                        porcentaje_utilizado: { type: "number", nullable: true, example: 32.5 },
+                        porcentaje_utilizado_aprobado: { type: "number", nullable: true, example: 34.26 },
+                        cantidad_gastos: { type: "integer", example: 23 }
+                    }
+                },
+                TotalPorCategoria: {
+                    type: "object",
+                    properties: {
+                        categoria_id: { type: "integer", example: 2 },
+                        nombre: { type: "string", example: "Materiales" },
+                        presupuestado: { type: "number", example: 80000000 },
+                        gastado: { type: "number", example: 31200000 },
+                        diferencia: {
+                            type: "number",
+                            description: "presupuestado - gastado (negativo si hay sobregiro)",
+                            example: 48800000
+                        },
+                        porcentaje_utilizado: { type: "number", nullable: true, example: 39 },
+                        cantidad_gastos: { type: "integer", example: 11 }
+                    }
+                },
+                TotalMensual: {
+                    type: "object",
+                    properties: {
+                        anio: { type: "integer", example: 2026 },
+                        mes: { type: "integer", minimum: 1, maximum: 12, example: 2 },
+                        etiqueta: {
+                            type: "string",
+                            description: "Listo para usarse como eje X en los gráficos",
+                            example: "2026-02"
+                        },
+                        total: { type: "number", example: 12800000 },
+                        cantidad_gastos: { type: "integer", example: 5 }
                     }
                 },
 
