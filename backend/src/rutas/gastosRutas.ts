@@ -8,6 +8,7 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 
 import { crearGasto, consultarGastos, actualizarGasto, eliminarGasto } from "../controladores/gastosControlador.js";
+import { verificarToken } from "../seguridad/verificarToken.js";
 
 const router = Router();
 /**
@@ -40,6 +41,8 @@ router.get("/", consultarGastos);
  *     summary: Registrar un nuevo gasto
  *     description: La categoría se indica por su nombre y debe existir previamente.
  *     tags: [Gastos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -72,6 +75,7 @@ router.get("/", consultarGastos);
  */
 router.post(
     "/guardar",
+    verificarToken,
     [
         body("proyecto_id")
             .notEmpty()
@@ -112,6 +116,8 @@ router.post(
  *   put:
  *     summary: Actualizar un gasto
  *     tags: [Gastos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     requestBody:
@@ -146,6 +152,7 @@ router.post(
  */
 router.put(
     "/actualizar/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })
@@ -190,6 +197,8 @@ router.put(
  *   delete:
  *     summary: Eliminar un gasto
  *     tags: [Gastos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     responses:
@@ -208,6 +217,7 @@ router.put(
  */
 router.delete(
     "/eliminar/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })

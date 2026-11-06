@@ -2,28 +2,11 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-/**
- * datos del usuario que viajan dentro del token jwt
- * (se firman en post /api/usuarios/login).
- */
 export interface UsuarioToken {
     id: number;
     correo: string;
 }
 
-/**
- * middleware que protege rutas exigiendo un token jwt válido.
- *
- * espera el encabezado `Authorization: Bearer <token>`, firmado con JWT_SECRET.
- * si el token es válido guarda sus datos en `res.locals.usuario` (UsuarioToken)
- * para que los controladores sepan qué usuario hizo la petición.
- * - 401 si no se envía el token o si es inválido / expiró.
- * - 500 si JWT_SECRET no está configurada.
- *
- * @param req - petición http
- * @param res - respuesta http
- * @param next - continúa con el siguiente middleware si el token es válido
- */
 export const verificarToken = (
     req: Request,
     res: Response,
@@ -32,7 +15,7 @@ export const verificarToken = (
 
     const autorizacion = req.headers.authorization;
 
-    // comprobar que se envió un token
+    // Comprobar que se envió un token
     if (!autorizacion?.startsWith("Bearer ")) {
         res.status(401).json({
             mensaje: "Debes iniciar sesión para acceder a este recurso"
@@ -40,7 +23,7 @@ export const verificarToken = (
         return;
     }
 
-    const token = autorizacion.split(" ")[1];
+    const token = autorizacion.slice(7).trim();
     const claveSecreta = process.env.JWT_SECRET;
 
     if (!claveSecreta) {
@@ -51,8 +34,31 @@ export const verificarToken = (
     }
 
     try {
-        // verificar que el token sea válido y guardar el usuario que lo envió
-        res.locals.usuario = jwt.verify(token, claveSecreta) as UsuarioToken;
+        // Verificar firma y vencimiento del JWT
+        const datos = jwt.verify(token, claveSecreta, {
+            algorithms: ["HS256"]
+        });
+
+        // Validar que el token contenga los datos esperados
+        if (
+            typeof datos === "string" ||
+            typeof datos.id !== "number" ||
+            !Number.isInteger(datos.id) ||
+            datos.id <= 0 ||
+            typeof datos.correo !== "string"
+        ) {
+            res.status(401).json({
+                mensaje: "Token inválido"
+            });
+            return;
+        }
+
+        // Guardar los datos del usuario autenticado
+        res.locals.usuario = {
+            id: datos.id,
+            correo: datos.correo
+        } satisfies UsuarioToken;
+
         next();
 
     } catch (error) {

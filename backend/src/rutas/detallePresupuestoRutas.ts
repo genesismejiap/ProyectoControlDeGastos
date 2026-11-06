@@ -14,6 +14,7 @@ import {
     actualizarDetallePresupuesto,
      eliminarDetallePresupuesto
 } from "../controladores/detallePresupuestoControlador.js";
+import { verificarToken } from "../seguridad/verificarToken.js";
 
 
 const router = Router();
@@ -46,6 +47,8 @@ router.get("/", consultarDetallesPresupuesto);
  *     summary: Registrar un detalle de presupuesto
  *     description: La categoría se indica por su nombre y debe existir previamente.
  *     tags: [Detalle de presupuestos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -78,6 +81,7 @@ router.get("/", consultarDetallesPresupuesto);
  */
 router.post(
     "/guardar",
+    verificarToken,
     [
         body("presupuesto_id")
             .notEmpty()
@@ -118,6 +122,8 @@ router.post(
  *   put:
  *     summary: Actualizar un detalle de presupuesto
  *     tags: [Detalle de presupuestos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     requestBody:
@@ -152,6 +158,7 @@ router.post(
  */
 router.put(
     "/actualizar/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })
@@ -194,6 +201,8 @@ router.put(
  *   delete:
  *     summary: Eliminar un detalle de presupuesto
  *     tags: [Detalle de presupuestos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     responses:
@@ -212,6 +221,7 @@ router.put(
  */
 router.delete(
     "/eliminar/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })
