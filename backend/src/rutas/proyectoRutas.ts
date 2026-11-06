@@ -13,6 +13,7 @@ import {
 	actualizarProyecto,
 	eliminarProyecto
 } from "../controladores/proyectosModelos.js";
+import { verificarToken } from "../seguridad/verificarToken.js";
 
 const router = Router();
 
@@ -142,6 +143,8 @@ router.get(
  *   post:
  *     summary: Registrar un nuevo proyecto
  *     tags: [Proyectos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -167,7 +170,7 @@ router.get(
  *       500:
  *         $ref: '#/components/responses/ErrorServidor'
  */
-router.post("/", validacionesProyecto, crearProyecto);
+router.post("/", verificarToken, validacionesProyecto, crearProyecto);
 
 
 /**
@@ -176,6 +179,8 @@ router.post("/", validacionesProyecto, crearProyecto);
  *   put:
  *     summary: Actualizar un proyecto
  *     tags: [Proyectos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     requestBody:
@@ -207,6 +212,8 @@ router.post("/", validacionesProyecto, crearProyecto);
  *   delete:
  *     summary: Eliminar un proyecto
  *     tags: [Proyectos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     responses:
@@ -225,6 +232,7 @@ router.post("/", validacionesProyecto, crearProyecto);
  */
 router.put(
     "/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })
@@ -236,6 +244,7 @@ router.put(
 
 router.delete(
     "/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })
@@ -243,4 +252,5 @@ router.delete(
     ],
     eliminarProyecto
 );
+
 export default router;

@@ -18,8 +18,10 @@ import {
     consultarCategoriasDeProyecto,
     consultarGastosMensuales
 } from "../controladores/reportesControlador.js";
+import { verificarToken } from "../seguridad/verificarToken.js";
 
 const router = Router();
+router.use(verificarToken);
 
 /**
  * Validaciones del rango de fechas.
@@ -68,6 +70,8 @@ const validarCategoriaOpcional = query("categoria_id")
  *       Totales acumulados de toda la aplicación. Las fechas filtran únicamente
  *       los gastos; los presupuestos siempre son el total vigente.
  *     tags: [Reportes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/Desde'
  *       - $ref: '#/components/parameters/Hasta'
@@ -97,6 +101,8 @@ router.get("/resumen", validarFechas, consultarResumenGeneral);
  *       Devuelve una fila por proyecto. Los proyectos sin gastos aparecen con
  *       los totales en cero, no se omiten de la lista.
  *     tags: [Reportes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/Desde'
  *       - $ref: '#/components/parameters/Hasta'
@@ -125,6 +131,8 @@ router.get("/proyectos", validarFechas, consultarTotalesPorProyecto);
  *   get:
  *     summary: Presupuesto utilizado y saldo disponible de un proyecto
  *     tags: [Reportes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *       - $ref: '#/components/parameters/Desde'
@@ -170,6 +178,8 @@ router.get(
  *       Solo aparecen las categorías que tienen presupuesto aprobado o gastos
  *       registrados en el rango consultado.
  *     tags: [Reportes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *       - $ref: '#/components/parameters/Desde'
@@ -220,6 +230,8 @@ router.get(
  *       Totales de todas las categorías, o de un solo proyecto si se envía
  *       `proyecto_id`. Pensado para el gráfico de distribución del gasto.
  *     tags: [Reportes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/ProyectoIdQuery'
  *       - $ref: '#/components/parameters/Desde'
@@ -256,6 +268,8 @@ router.get(
  *       Una fila por mes con registros, con la etiqueta "AAAA-MM" ya armada
  *       para usarla como eje X en los gráficos de línea.
  *     tags: [Reportes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/ProyectoIdQuery'
  *       - $ref: '#/components/parameters/CategoriaIdQuery'

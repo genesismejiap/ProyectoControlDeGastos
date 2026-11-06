@@ -14,6 +14,7 @@ import { crearPresupuesto,
  } from "../controladores/presupuestoControlador.js";
 
 const router = Router();
+import { verificarToken } from "../seguridad/verificarToken.js";
 
 
 /**
@@ -47,6 +48,8 @@ router.get("/", consultarPresupuestos);
  *     summary: Actualizar un presupuesto
  *     description: En la actualización el campo `estado` es obligatorio.
  *     tags: [Presupuestos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     requestBody:
@@ -83,6 +86,7 @@ router.get("/", consultarPresupuestos);
  */
 router.put(
     "/actualizar/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })
@@ -117,6 +121,8 @@ router.put(
  *     summary: Registrar un nuevo presupuesto
  *     description: Si no se envía `estado`, se guarda como "Borrador".
  *     tags: [Presupuestos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -149,6 +155,7 @@ router.put(
  */
 router.post(
     "/guardar",
+    verificarToken,
     [
         body("proyecto_id")
             .notEmpty()
@@ -177,6 +184,8 @@ router.post(
  *   delete:
  *     summary: Eliminar un presupuesto
  *     tags: [Presupuestos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     responses:
@@ -195,6 +204,7 @@ router.post(
  */
 router.delete(
     "/eliminar/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })

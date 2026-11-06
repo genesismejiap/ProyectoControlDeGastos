@@ -8,6 +8,7 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 
 import { crearCategoria, consultarCategorias, eliminarCategoria, actualizarCategoria } from "../controladores/categoriasModelo.js";
+import { verificarToken } from "../seguridad/verificarToken.js";
 
 const router = Router();
 
@@ -40,6 +41,8 @@ router.get("/", consultarCategorias);
  *   post:
  *     summary: Registrar una nueva categoría
  *     tags: [Categorías]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -72,6 +75,7 @@ router.get("/", consultarCategorias);
  */
 router.post(
     "/guardar",
+    verificarToken,
     [
         body("nombre")
             .trim()
@@ -94,6 +98,8 @@ router.post(
  *   delete:
  *     summary: Eliminar una categoría
  *     tags: [Categorías]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     responses:
@@ -112,6 +118,7 @@ router.post(
  */
 router.delete(
     "/eliminar/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })
@@ -126,6 +133,8 @@ router.delete(
  *   put:
  *     summary: Actualizar una categoría
  *     tags: [Categorías]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdRuta'
  *     requestBody:
@@ -162,6 +171,7 @@ router.delete(
  */
 router.put(
     "/actualizar/:id",
+    verificarToken,
     [
         param("id")
             .isInt({ min: 1 })
