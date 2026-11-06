@@ -27,6 +27,14 @@ import {
 } from "../seguridad/verificarRol.js";
 import { ROLES } from "../modelos/usuarioModelo.js";
 
+import {
+    solicitarRecuperacion,
+    verificarRecuperacion,
+    restablecerContrasena
+} from "../controladores/recuperacionControlador.js";
+
+import { limitarRecuperacion } from "../seguridad/limitarRecuperacion.js";
+
 const router = Router();
 
 /**
@@ -179,6 +187,126 @@ router.post(
     iniciarSesion
 );
 
+/**
+ * @swagger
+ * /api/usuarios/recuperar-contrasena:
+ *   post:
+ *     summary: Solicitar recuperación de contraseña
+ *     tags: [Recuperación de contraseña]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [correo]
+ *             properties:
+ *               correo:
+ *                 type: string
+ *                 format: email
+ *                 example: usuario@ejemplo.com
+ *     responses:
+ *       200:
+ *         description: Solicitud procesada
+ *       400:
+ *         description: Correo inválido
+ */
+router.post(
+    "/recuperar-contrasena",
+    limitarRecuperacion,
+    [
+        body("correo")
+            .isEmail()
+            .withMessage("Ingrese un correo válido")
+            .normalizeEmail()
+    ],
+    validarCampos,
+    solicitarRecuperacion
+);
+
+/**
+ * @swagger
+ * /api/usuarios/verificar-recuperacion:
+ *   get:
+ *     summary: Verificar token de recuperación
+ *     tags: [Recuperación de contraseña]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Token válido
+ *       400:
+ *         description: Token inválido o expirado
+ */
+router.get(
+    "/verificar-recuperacion",
+    [
+        query("token")
+            .isString()
+            .notEmpty()
+            .withMessage("El token es obligatorio")
+            .isLength({ min: 64, max: 64 })
+            .withMessage("El token debe tener 64 caracteres")
+            .matches(/^[a-f0-9]{64}$/)
+            .withMessage("Formato de token inválido")
+    ],
+    validarCampos,
+    verificarRecuperacion
+);
+
+/**
+ * @swagger
+ * /api/usuarios/restablecer-contrasena:
+ *   post:
+ *     summary: Restablecer contraseña
+ *     tags: [Recuperación de contraseña]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [token, contrasena]
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Token recibido por correo
+ *               contrasena:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 8
+ *                 maxLength: 72
+ *     responses:
+ *       200:
+ *         description: Contraseña restablecida correctamente
+ *       400:
+ *         description: Datos inválidos o token expirado
+ */
+router.post(
+    "/restablecer-contrasena",
+    [
+        body("token")
+            .isString()
+            .notEmpty()
+            .matches(/^[a-f0-9]{64}$/)
+            .withMessage("Token inválido"),
+
+        body("contrasena")
+            .isString()
+            .withMessage("La contraseña debe ser texto")
+            .bail()
+            .isLength({ min: 8, max: 72 })
+            .withMessage(
+                "La contraseña debe tener entre 8 y 72 caracteres"
+            )
+    ],
+    validarCampos,
+    restablecerContrasena
+);
 
 // ---------------------------------------------------------------------------
 // Consulta, actualización y eliminación (requieren token)
