@@ -27,6 +27,7 @@ import detallePresupuestoRutas from "./rutas/detallePresupuestoRutas.js";
 import gastosRutas from "./rutas/gastosRutas.js";
 import { Usuario, ROLES } from "./modelos/usuarioModelo.js";
 import { DataTypes } from "sequelize";
+import { RecuperacionContrasena } from "./modelos/recuperacionModelo.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -132,6 +133,9 @@ async function iniciarServidor() {
 
         // Crear la tabla detalle_presupuesto si no existe
         await DetallePresupuesto.sync();
+
+        // Crear la tabla usuarios si no existe
+        await Usuario.sync();
 
         // Crear la tabla usuarios si no existe
         await Usuario.sync();
