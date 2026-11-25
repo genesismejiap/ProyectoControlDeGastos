@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #1a2332;
+  --color-navy-soft: #243046;
+  --color-teal: #2d8b8b;
+  --color-teal-dark: #216b6b;
+  --color-seafoam: #a8dadc;
+  --color-cream: #f1faee;
+  --color-text-muted: #4a5668;
+}
+
+body {
+  margin: 0;
+  font-family: "DejaVu Sans", "Bitstream Vera Sans",
+    Verdana, Geneva, sans-serif;
+  background: #f1faee;
+  color: #1a2332;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+header nav a.active {
+  color: #a8dadc;
+  border-bottom: 2px solid #2d8b8b;
+  padding-bottom: 5px;
+}
+
+header nav a:hover {
+  color: #a8dadc;
+}
