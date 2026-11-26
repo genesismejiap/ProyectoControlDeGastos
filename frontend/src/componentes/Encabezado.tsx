@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contextos/AuthContext';
 
 export const Encabezado: React.FC = () => {
 
   const [scrolled, setScrolled] = useState(false);
+
+  const { usuario, cerrarSesion, cargando } = useAuth();
+  const navigate = useNavigate();
+
+  const salir = () => {
+    cerrarSesion();
+    navigate('/login', { replace: true });
+  };
 
   useEffect(() => {
     const manejarScroll = () => {
@@ -91,15 +100,55 @@ export const Encabezado: React.FC = () => {
               </NavLink>
             </li>
 
-            <li>
-              <Link
-                to="/login"
-                className="bg-teal hover:bg-teal-dark
-                px-5 py-3 text-white transition-colors"
-              >
-                Iniciar sesión
-              </Link>
-            </li>
+            {/* Opciones según la sesión */}
+            {!cargando && (
+              usuario ? (
+
+                <>
+
+                  <li className="text-seafoam normal-case tracking-normal">
+                    Hola, {usuario.nombre}
+                  </li>
+
+                  {usuario.rol === 'administrador' && (
+                    <li>
+                      <Link
+                        to="/admin"
+                        className="hover:text-seafoam"
+                      >
+                        Administración
+                      </Link>
+                    </li>
+                  )}
+
+                  <li>
+                    <button
+                      type="button"
+                      onClick={salir}
+                      className="bg-teal hover:bg-teal-dark
+                      px-5 py-3 text-white transition-colors
+                      uppercase cursor-pointer"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </li>
+
+                </>
+
+              ) : (
+
+                <li>
+                  <Link
+                    to="/login"
+                    className="bg-teal hover:bg-teal-dark
+                    px-5 py-3 text-white transition-colors"
+                  >
+                    Iniciar sesión
+                  </Link>
+                </li>
+
+              )
+            )}
 
           </ul>
 

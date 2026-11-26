@@ -18,13 +18,30 @@ export const RecuperacionContrasena = db.define(
 
         token_hash: {
             type: DataTypes.CHAR(64),
-            allowNull: false,
+            allowNull: true,
             unique: true
+        },
+
+        codigo_hash: {
+            type: DataTypes.STRING(255),
+            allowNull: true
         },
 
         fecha_expiracion: {
             type: DataTypes.DATE,
             allowNull: false
+        },
+
+        intentos: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+
+        verificado: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
         },
 
         utilizado: {

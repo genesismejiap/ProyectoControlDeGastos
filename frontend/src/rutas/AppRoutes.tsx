@@ -9,6 +9,13 @@ import {
 import LayoutPublico from '../layouts/LayoutPublico';
 import LayoutAdmin from '../layouts/LayoutAdmin';
 import RutaProtegida from './RutaProtegida';
+import Login from '../paginas/autenticacion/Login';
+import Registro from '../paginas/autenticacion/Registro';
+import RecuperarContrasena from '../paginas/autenticacion/RecuperarContrasena';
+import VerificarCodigo from '../paginas/autenticacion/VerificarCodigo';
+import { RestablecerContrasena } from '../paginas/autenticacion/ReestablecerContrasena';
+import AdministrarUsuarios from '../paginas/usuarios/AdministrarUsuarios';
+
 
 const AppRoutes: React.FC = () => {
   return (
@@ -49,13 +56,13 @@ const AppRoutes: React.FC = () => {
             </div>
           } />
 
-          <Route path="/login" element={
-            <div className="pt-40 pb-20 text-center text-3xl">
-              Iniciar sesión
-            </div>
-          } />
+    <Route path="/login" element={<Login />} />
+<Route path="/registro" element={<Registro />} />
+<Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
+<Route path="/verificar-codigo" element={<VerificarCodigo />} />
+<Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
 
-        </Route>
+</Route>
 
         {/* Rutas administrativas protegidas */}
         <Route element={<RutaProtegida />}>
@@ -92,11 +99,7 @@ const AppRoutes: React.FC = () => {
               </h2>
             } />
 
-            <Route path="usuarios" element={
-              <h2 className="text-3xl font-bold">
-                Gestión de usuarios
-              </h2>
-            } />
+            <Route path="usuarios" element={<AdministrarUsuarios />} />
 
             <Route path="archivos" element={
               <h2 className="text-3xl font-bold">

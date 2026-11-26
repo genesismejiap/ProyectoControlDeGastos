@@ -33,7 +33,10 @@ import {
     restablecerContrasena
 } from "../controladores/recuperacionControlador.js";
 
-import { limitarRecuperacion } from "../seguridad/limitarRecuperacion.js";
+import {
+    limitarRecuperacion,
+    limitarVerificacion
+} from "../seguridad/limitarRecuperacion.js";
 
 const router = Router();
 
@@ -227,32 +230,45 @@ router.post(
 /**
  * @swagger
  * /api/usuarios/verificar-recuperacion:
- *   get:
- *     summary: Verificar token de recuperación
+ *   post:
+ *     summary: Verificar código de recuperación
  *     tags: [Recuperación de contraseña]
- *     parameters:
- *       - in: query
- *         name: token
- *         required: true
- *         schema:
- *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [correo, codigo]
+ *             properties:
+ *               correo:
+ *                 type: string
+ *                 format: email
+ *                 example: usuario@ejemplo.com
+ *               codigo:
+ *                 type: string
+ *                 example: "084296"
  *     responses:
  *       200:
- *         description: Token válido
+ *         description: Código verificado correctamente
  *       400:
- *         description: Token inválido o expirado
+ *         description: Código incorrecto o expirado
+ *       429:
+ *         description: Demasiados intentos
  */
-router.get(
+router.post(
     "/verificar-recuperacion",
+    limitarVerificacion,
     [
-        query("token")
+        body("correo")
+            .isEmail()
+            .withMessage("Ingrese un correo válido")
+            .normalizeEmail(),
+
+        body("codigo")
             .isString()
-            .notEmpty()
-            .withMessage("El token es obligatorio")
-            .isLength({ min: 64, max: 64 })
-            .withMessage("El token debe tener 64 caracteres")
-            .matches(/^[a-f0-9]{64}$/)
-            .withMessage("Formato de token inválido")
+            .matches(/^\d{6}$/)
+            .withMessage("El código debe tener 6 dígitos")
     ],
     validarCampos,
     verificarRecuperacion
@@ -274,7 +290,7 @@ router.get(
  *             properties:
  *               token:
  *                 type: string
- *                 description: Token recibido por correo
+*                 description: Token obtenido al verificar el código
  *               contrasena:
  *                 type: string
  *                 format: password
