@@ -6,6 +6,7 @@ import {
   Navigate
 } from 'react-router-dom';
 
+import Servicios from '../paginas/Servicios';
 import LayoutPublico from '../layouts/LayoutPublico';
 import { Archivos, SubirArchivo } from '../paginas/Archivos';
 import LayoutAdmin from '../layouts/LayoutAdmin';
@@ -33,11 +34,7 @@ const AppRoutes: React.FC = () => {
             </div>
           } />
 
-          <Route path="/servicios" element={
-            <div className="pt-40 pb-20 text-center text-3xl">
-              Nuestros servicios
-            </div>
-          } />
+          <Route path="/servicios" element={<Servicios />} />
 
           <Route path="/proyectos" element={
             <div className="pt-40 pb-20 text-center text-3xl">
