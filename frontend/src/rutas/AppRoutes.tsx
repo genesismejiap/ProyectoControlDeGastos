@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 
 import LayoutPublico from '../layouts/LayoutPublico';
+import { Archivos, SubirArchivo } from '../paginas/Archivos';
 import LayoutAdmin from '../layouts/LayoutAdmin';
 import RutaProtegida from './RutaProtegida';
 import Login from '../paginas/autenticacion/Login';
@@ -101,11 +102,9 @@ const AppRoutes: React.FC = () => {
 
             <Route path="usuarios" element={<AdministrarUsuarios />} />
 
-            <Route path="archivos" element={
-              <h2 className="text-3xl font-bold">
-                Gestión de archivos
-              </h2>
-            } />
+            <Route path="archivos" element={<Archivos />} />
+            <Route path="archivos/imagenes" element={<SubirArchivo key="imagen" tipo="imagen" />} />
+            <Route path="archivos/documentos" element={<SubirArchivo key="documento" tipo="documento" />} />
 
           </Route>
 
